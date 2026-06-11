@@ -1,0 +1,135 @@
+{
+  "personalInfo": {
+    "name": "إسراء حمد",
+    "name_ar": "إسراء حمد",
+    "name_en": "Israa Hamad",
+    "title": "مهندس برمجيات ومطور واجهات تفاعلية",
+    "title_ar": "مهندس برمجيات ومطور واجهات تفاعلية",
+    "title_en": "Software Engineer & Front-End Developer",
+    "bio": "أقوم بابتكار حلول رقمية وتصميم تطبيقات ويب تفاعلية فائقة السرعة تجمع بين الجمال والعملية، لمساعدة الأفراد والشركات على النمو رقمياً.",
+    "bio_ar": "أقوم بابتكار حلول رقمية وتصميم تطبيقات ويب تفاعلية فائقة السرعة تجمع بين الجمال والعملية، لمساعدة الأفراد والشركات على النمو رقمياً.",
+    "bio_en": "I build innovative, high-performance web solutions that blend visual design with smooth accessibility to help businesses grow globally.",
+    "aboutText": "أنا مهندس برمجيات شغوف بتطوير وتصميم واجهات المستخدم الحديثة. أمتلك خبرة واسعة في بناء تطبيقات الويب المتكاملة ومواقع الويب سريعة الاستجابة. أهتم بكتابة برمجيات نظيفة وقابلة للتطوير، وتحسين محركات البحث وسرعة المواقع لتقديم أرقى تجربة رقمية ممكنة للمستخدم النهائي.",
+    "aboutText_ar": "أنا مهندس برمجيات شغوف بتطوير وتصميم واجهات المستخدم الحديثة. أمتلك خبرة واسعة في بناء تطبيقات الويب المتكاملة ومواقع الويب سريعة الاستجابة. أهتم بكتابة برمجيات نظيفة وقابلة للتطوير، وتحسين محركات البحث وسرعة المواقع لتقديم أرقى تجربة رقمية ممكنة للمستخدم النهائي.",
+    "aboutText_en": "I am a dedicated software engineer with a strong passion for building stunning, scalable front-end interfaces. Experienced in crafting modern web platforms, responsive code architectures, and high-performance user journeys, I focus on writing maintainable code and optimizing SEO metrics to ensure maximum end-user satisfaction.",
+    "avatarUrl": "",
+    "cvUrl": "",
+    "email": "eng.mohamed.hassan@example.com",
+    "phone": "+966 50 123 4567",
+    "location": "الرياض، المملكة العربية السعودية",
+    "location_ar": "الرياض، المملكة العربية السعودية",
+    "location_en": "Riyadh, Saudi Arabia",
+    "githubUrl": "https://github.com",
+    "linkedinUrl": "https://linkedin.com",
+    "twitterUrl": "https://twitter.com",
+    "whatsappUrl": "https://wa.me/966501234567",
+    "accentColor": "#f97316",
+    "avatarBgColor": "#fed7aa"
+  },
+  "skills": [
+    {
+      "id": "sk1",
+      "name": "تطوير واجهات المستخدم (React / Vite)",
+      "name_ar": "تطوير واجهات المستخدم (React / Vite)",
+      "name_en": "Front-End Development (React / Vite)",
+      "level": 95,
+      "category": "frontend",
+      "iconName": "Code"
+    },
+    {
+      "id": "sk2",
+      "name": "تنسيق وتصميم الصفحات (Tailwind CSS)",
+      "name_ar": "تنسيق وتصميم الصفحات (Tailwind CSS)",
+      "name_en": "Responsive Styling (Tailwind CSS)",
+      "level": 90,
+      "category": "frontend",
+      "iconName": "Layers"
+    },
+    {
+      "id": "sk3",
+      "name": "برمجة جافا سكريبت وتيب سكريبت",
+      "name_ar": "برمجة جافا سكريبت وتيب سكريبت",
+      "name_en": "JavaScript & TypeScript",
+      "level": 88,
+      "category": "frontend",
+      "iconName": "Laptop"
+    },
+    {
+      "id": "sk4",
+      "name": "برمجة خوادم ويب (Node.js & Express)",
+      "name_ar": "برمجة خوادم ويب (Node.js & Express)",
+      "name_en": "Server-Side Coding (Node.js & Express)",
+      "level": 80,
+      "category": "backend",
+      "iconName": "Cpu"
+    },
+    {
+      "id": "sk5",
+      "name": "إدارة قواعد البيانات (MongoDB / PostgreSQL)",
+      "name_ar": "إدارة قواعد البيانات (MongoDB / PostgreSQL)",
+      "name_en": "Database Engineering (Relational & NoSQL)",
+      "level": 75,
+      "category": "backend",
+      "iconName": "Database"
+    },
+    {
+      "id": "sk6",
+      "name": "تصميم تجربة المستخدم والواجهات UI/UX",
+      "name_ar": "تصميم تجربة المستخدم والواجهات UI/UX",
+      "name_en": "UI/UX & Interactive Prototyping",
+      "level": 85,
+      "category": "design",
+      "iconName": "Palette"
+    },
+    {
+      "id": "sk7",
+      "name": "التحكم بالإصدارات وإدارة الأكواد (Git / GitHub)",
+      "name_ar": "التحكم بالإصدارات وإدارة الأكواد (Git / GitHub)",
+      "name_en": "Version Control (Git / GitHub)",
+      "level": 90,
+      "category": "other",
+      "iconName": "GitBranch"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj1",
+      "title": "منصة إدارة المهام الذكية - Taskify",
+      "title_ar": "منصة إدارة المهام الذكية - Taskify",
+      "title_en": "Smart Task Manager - Taskify",
+      "description": "نظام تفاعلي متقدم لتنظيم وتتبع مهام الفريق، مع لوحة بيانات تعرض تقدم العمل وسرعة الإنجاز والمسارات الحرجة للمشاريع بنقرة واحدة.",
+      "description_ar": "نظام تفاعلي متقدم لتنظيم وتتبع مهام الفريق، مع لوحة بيانات تعرض تقدم العمل وسرعة الإنجاز والمسارات الحرجة للمشاريع بنقرة واحدة.",
+      "description_en": "An advanced collaborative environment designed for micro task tracking, sprint scheduling, and velocity metric visualizations that keep developers in full alignment.",
+      "imageUrl": "",
+      "demoUrl": "https://example.com/demo1",
+      "githubUrl": "https://github.com/example/taskify",
+      "techTags": ["React", "Tailwind CSS", "Motion", "Express"]
+    },
+    {
+      "id": "proj2",
+      "title": "متجر ريادة الإلكتروني الممتاز ",
+      "title_ar": "متجر ريادة الإلكتروني الممتاز ",
+      "title_en": "Reyada Premium E-Commerce Hub",
+      "description": "منصة تجارة إلكترونية كاملة متجاوبة للكومبيوتر والهواتف، تحتوي على تصفح للمنتجات مع نظام متكامل لسلة المشتريات وتجربة دفع أنيقة وسريعة.",
+      "description_ar": "منصة تجارة إلكترونية كاملة متجاوبة للكومبيوتر والهواتف، تحتوي على تصفح للمنتجات مع نظام متكامل لسلة المشتريات وتجربة دفع أنيقة وسريعة.",
+      "description_en": "A state-of-the-art virtual marketplace featuring modular catalogs, interactive add-to-carts, instant coupon application flows, and high fidelity credit check simulations.",
+      "imageUrl": "",
+      "demoUrl": "https://example.com/demo2",
+      "githubUrl": "https://github.com/example/store",
+      "techTags": ["React", "TypeScript", "Node.js", "Tailwind CSS"]
+    },
+    {
+      "id": "proj3",
+      "title": "موقع عيادتي للخدمات الطبية",
+      "title_ar": "موقع عيادتي للخدمات الطبية",
+      "title_en": "MyClinic Digital Health Hub",
+      "description": "موقع تعريفي ونظام حجز مواعيد مرن للأطباء والعيادات الطبية التخصصية، يدعم حجز المواعيد الفورية وتنظيم الزيارات مع إشعارات الرسائل.",
+      "description_ar": "موقع تعريفي ونظام حجز مواعيد مرن للأطباء والعيادات الطبية التخصصية، يدعم حجز المواعيد الفورية وتنظيم الزيارات مع إشعارات الرسائل.",
+      "description_en": "A clean, modern platform built for specialized healthcare clinics, supporting doctor directory lookups, calendar-based reservations, and immediate auto-email feedback loop triggers.",
+      "imageUrl": "",
+      "demoUrl": "https://example.com/demo3",
+      "githubUrl": "https://github.com/example/clinic",
+      "techTags": ["Vite", "Tailwind CSS", "React"]
+    }
+  ]
+}

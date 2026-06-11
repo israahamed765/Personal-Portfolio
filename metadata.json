@@ -1,0 +1,6 @@
+{
+  "name": "Personal Portfolio",
+  "description": "معرض أعمال شخصي متكامل لإسراء حمد يعرض المشاريع والمهارات والخبرات المهنية مع لوحة تحكم متطورة",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

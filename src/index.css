@@ -1,0 +1,273 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght=300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Cairo", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+:root {
+  /* Site-wide Color Variables (Light Theme) */
+  --bg-app: #f8fafc;
+  --bg-section: #ffffff;
+  --bg-card: #f1f5f9;
+  --bg-card-inner: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-subtitle: #334155;
+  --border-main: #e2e8f0;
+  --border-secondary: #cbd5e1;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #0f172a;
+  --scroll-track: #f1f5f9;
+  --scroll-thumb: #cbd5e1;
+  --scroll-thumb-hover: #94a3b8;
+  --bg-hero: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+}
+
+html.dark {
+  /* 🌟 خلفيات داكنة فخمة متباينة لتفادي السواد المطلق */
+  --bg-app: #0f172a;          /* Slate 900 */
+  --bg-section: #1e293b;      /* Slate 800 */
+  --bg-card: #334155;         /* Slate 700 */
+  --bg-card-inner: #1e293b;   
+  
+  /* 🌟 توزيع درجات عائلة الأبيض والرمادي الفاتح بدقة */
+  --text-main: #ffffff;       /* أبيض ناصع 100% للعناوين الرئيسية (H1, H2, H3) */
+  --text-subtitle: #f1f5f9;   /* أبيض عاجي ناعم جداً للعناوين الفرعية والفقرات الهامة */
+  --text-muted: #cbd5e1;      /* رمادي فاتح جداً (أبيض باهت) للنصوص الثانوية والـ Captions */
+  
+  /* الحدود المحسنة */
+  --border-main: #475569;     
+  --border-secondary: #334155;
+  
+  /* حقول الإدخال */
+  --input-bg: #1e293b;
+  --input-border: #475569;    
+  --input-text: #ffffff;      
+  
+  /* شريط التمرير */
+  --scroll-track: #0f172a;
+  --scroll-thumb: #475569;
+  --scroll-thumb-hover: #64748b;
+  --bg-hero: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom scrollbars for a clean tech aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+
+/* --- Global Dynamic Section Theme Overrides --- */
+
+#hero {
+  background: var(--bg-hero) !important;
+}
+
+#about {
+  background-color: var(--bg-section) !important;
+  border-color: var(--border-main) !important;
+}
+#about .bg-slate-50, #about .bg-white {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-secondary) !important;
+}
+#about div[class*="bg-slate-100"] {
+  background-color: var(--bg-card-inner) !important;
+}
+
+/* Skills section adaptation */
+#skills {
+  background-color: var(--bg-app) !important;
+}
+#skills .bg-white, #skills .bg-slate-50 {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-main) !important;
+}
+#skills button:not([style*="background-color"]) {
+  background-color: var(--bg-card-inner) !important;
+  border-color: var(--border-main) !important;
+}
+
+/* Projects Showcase section adaptation */
+#projects {
+  background-color: var(--bg-section) !important;
+  border-color: var(--border-main) !important;
+}
+#projects .bg-slate-50, #projects div[class*="bg-slate-100"] {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-secondary) !important;
+}
+
+/* Contact Guest Form and channels adaptation */
+#contact {
+  background-color: var(--bg-app) !important;
+  border-color: var(--border-main) !important;
+}
+#contact .bg-slate-50,
+#contact .bg-slate-50\/70,
+#contact .bg-slate-50\/40,
+#contact .bg-white {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-main) !important;
+}
+#contact input,
+#contact textarea {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+}
+#contact input::placeholder,
+#contact textarea::placeholder {
+  opacity: 0.8; 
+}
+
+/* Global Navbar sticky color support */
+nav {
+  transition: bg-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease !important;
+}
+nav.bg-white\/95,
+nav.backdrop-blur-md {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--border-main) !important;
+}
+html.dark nav.bg-white\/95,
+html.dark nav.backdrop-blur-md {
+  background-color: rgba(30, 41, 59, 0.95) !important; 
+  border-color: var(--border-main) !important;
+}
+
+/* Footer Adaptation */
+footer {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-main) !important;
+}
+
+
+/* --- Admin Panel Dynamic Theme Adapter Styles --- */
+
+.fixed.z-50 div.bg-slate-900,
+html.dark .fixed.z-50 div.bg-slate-900 {
+  background-color: var(--bg-card-inner) !important;
+  border-color: var(--border-main) !important;
+}
+
+.fixed.z-50 h3.text-white,
+.fixed.z-50 div.bg-slate-900 h3,
+html.dark .fixed.z-50 h3.text-white,
+html.dark .fixed.z-50 div.bg-slate-900 h3 {
+  border-color: var(--border-main) !important;
+}
+
+.fixed.z-50 .bg-slate-950,
+.fixed.z-50 input:not([type="color"]):not([type="checkbox"]):not([type="file"]),
+.fixed.z-50 textarea,
+.fixed.z-50 select,
+html.dark .fixed.z-50 .bg-slate-950,
+html.dark .fixed.z-50 input:not([type="color"]):not([type="checkbox"]):not([type="file"]),
+html.dark .fixed.z-50 textarea,
+html.dark .fixed.z-50 select {
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+}
+
+.fixed.z-50 .bg-slate-950\/50,
+.fixed.z-50 .bg-slate-950\/30,
+.fixed.z-50 .bg-slate-950\/45,
+html.dark .fixed.z-50 .bg-slate-950\/50,
+html.dark .fixed.z-50 .bg-slate-950\/30,
+html.dark .fixed.z-50 .bg-slate-950\/45 {
+  background-color: var(--bg-app) !important;
+  border-color: var(--border-main) !important;
+}
+
+.fixed.z-50 .border-slate-800,
+.fixed.z-50 .border-slate-850,
+html.dark .fixed.z-50 .border-slate-800,
+html.dark .fixed.z-50 .border-slate-850 {
+  border-color: var(--border-main) !important;
+}
+
+/* Ensure color picker box values don't reverse hashtags in RTL */
+.fixed.z-50 input.font-mono,
+.fixed.z-50 span.font-mono {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+
+/* ==========================================================================
+   🚨 تصفير وإلغاء أي خلفية بيضاء تظهر في الدارك مودي مع توزيع تدرج عائلة الأبيض 🚨
+   ========================================================================== */
+
+html.dark {
+  /* 1. مسح أي خلفيات بيضاء مدمجة بكلاسات Tailwind القديمة وتحويلها لدرجات داكنة محترفة */
+  .bg-white, 
+  .bg-slate-50, 
+  .bg-slate-100, 
+  .bg-gray-50, 
+  .bg-gray-100,
+  div[class*="bg-white"],
+  div[class*="bg-slate-50"],
+  div[class*="bg-gray-50"] {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-main) !important;
+  }
+}
+
+/* 2. توزيع درجات "الأبيض" الذكية رغماً عن كلاسات الـ text-slate المكتوبة بجافاسكريبت */
+html.dark {
+  /* الدرجة الأولى: الأبيض الناصع المشع للعناوين الكبرى لتعطي قوة بصرية */
+  h1, h2, h3, .text-3xl, .text-2xl, .text-xl, strong, th {
+    color: var(--text-main) !important;
+    --tw-text-opacity: 1 !important;
+  }
+
+  /* الدرجة الثانية: الأبيض العاجي المريح جداً للفقرات الطويلة والنصوص الرئيسية */
+  p, li, label, td, input, textarea, select {
+    color: var(--text-subtitle) !important;
+    --tw-text-opacity: 1 !important;
+  }
+
+  /* الدرجة الثالثة: الأبيض الباهت (الرمادي الفاتح) للتلميحات المساعدة والأيقونات والتواريخ */
+  span, small, .text-sm, .text-xs, svg {
+    color: var(--text-muted) !important;
+    --tw-text-opacity: 1 !important;
+  }
+  
+  /* معالجة خاصة لـ الأزرار لتأخذ خطاً أبيضاً بارزاً */
+  button, a {
+    color: #ffffff !important;
+  }
+
+  /* معالجة النصوص داخل حقول النص */
+  input::placeholder, 
+  textarea::placeholder {
+    color: #94a3b8 !important; /* لون واضح للـ Placeholder */
+  }
+}
