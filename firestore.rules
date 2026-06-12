@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Active Portfolio Configuration
+    match /portfolio/active {
+      allow read, write: if true; // Accessible for the application backend and visitors
+    }
+
+    // 3. Submitted Visitor Messages
+    match /messages/{messageId} {
+      allow read, write: if true; // Accessible for the visitor contact form and inbox operations
+    }
+  }
+}

@@ -27,31 +27,23 @@
 }
 
 html.dark {
-  /* 🌟 خلفيات داكنة فخمة متباينة لتفادي السواد المطلق */
-  --bg-app: #0f172a;          /* Slate 900 */
-  --bg-section: #1e293b;      /* Slate 800 */
-  --bg-card: #334155;         /* Slate 700 */
-  --bg-card-inner: #1e293b;   
-  
-  /* 🌟 توزيع درجات عائلة الأبيض والرمادي الفاتح بدقة */
-  --text-main: #ffffff;       /* أبيض ناصع 100% للعناوين الرئيسية (H1, H2, H3) */
-  --text-subtitle: #f1f5f9;   /* أبيض عاجي ناعم جداً للعناوين الفرعية والفقرات الهامة */
-  --text-muted: #cbd5e1;      /* رمادي فاتح جداً (أبيض باهت) للنصوص الثانوية والـ Captions */
-  
-  /* الحدود المحسنة */
-  --border-main: #475569;     
-  --border-secondary: #334155;
-  
-  /* حقول الإدخال */
-  --input-bg: #1e293b;
-  --input-border: #475569;    
-  --input-text: #ffffff;      
-  
-  /* شريط التمرير */
-  --scroll-track: #0f172a;
-  --scroll-thumb: #475569;
-  --scroll-thumb-hover: #64748b;
-  --bg-hero: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  /* Site-wide Color Variables (Dark Theme) */
+  --bg-app: #030712;
+  --bg-section: #090d16;
+  --bg-card: #0f172a;
+  --bg-card-inner: #030712;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-subtitle: #cbd5e1;
+  --border-main: #1e293b;
+  --border-secondary: #111827;
+  --input-bg: #030712;
+  --input-border: #1e293b;
+  --input-text: #cbd5e1;
+  --scroll-track: #030712;
+  --scroll-thumb: #1e293b;
+  --scroll-thumb-hover: #334155;
+  --bg-hero: linear-gradient(180deg, #030712 0%, #0f172a 50%, #030712 100%);
 }
 
 html {
@@ -86,29 +78,41 @@ body {
 
 /* --- Global Dynamic Section Theme Overrides --- */
 
+/* Hero Section background adaptation */
 #hero {
   background: var(--bg-hero) !important;
 }
 
+/* About career section elements adaptation */
 #about {
   background-color: var(--bg-section) !important;
   border-color: var(--border-main) !important;
 }
-#about .bg-slate-50, #about .bg-white {
+#about .bg-slate-50 {
   background-color: var(--bg-card) !important;
   border-color: var(--border-secondary) !important;
 }
-#about div[class*="bg-slate-100"] {
+#about .bg-white {
   background-color: var(--bg-card-inner) !important;
+  border-color: var(--border-main) !important;
+}
+/* Quote box style inside About */
+#about div[class*="bg-slate-100"] {
+  background-color: var(--bg-card) !important;
+  color: var(--text-muted) !important;
 }
 
 /* Skills section adaptation */
 #skills {
   background-color: var(--bg-app) !important;
 }
-#skills .bg-white, #skills .bg-slate-50 {
+#skills .bg-white {
   background-color: var(--bg-card) !important;
   border-color: var(--border-main) !important;
+}
+#skills .bg-slate-50 {
+  background-color: var(--bg-card-inner) !important;
+  border-color: var(--border-secondary) !important;
 }
 #skills button:not([style*="background-color"]) {
   background-color: var(--bg-card-inner) !important;
@@ -120,9 +124,13 @@ body {
   background-color: var(--bg-section) !important;
   border-color: var(--border-main) !important;
 }
-#projects .bg-slate-50, #projects div[class*="bg-slate-100"] {
+#projects .bg-slate-50 {
   background-color: var(--bg-card) !important;
   border-color: var(--border-secondary) !important;
+}
+#projects div[class*="bg-slate-100"] {
+  background-color: var(--bg-card-inner) !important;
+  border-color: var(--border-main) !important;
 }
 
 /* Contact Guest Form and channels adaptation */
@@ -132,19 +140,24 @@ body {
 }
 #contact .bg-slate-50,
 #contact .bg-slate-50\/70,
-#contact .bg-slate-50\/40,
-#contact .bg-white {
+#contact .bg-slate-50\/40 {
   background-color: var(--bg-card) !important;
   border-color: var(--border-main) !important;
+}
+#contact .bg-white {
+  background-color: var(--bg-card-inner) !important;
+  border-color: var(--border-secondary) !important;
 }
 #contact input,
 #contact textarea {
   background-color: var(--input-bg) !important;
   border-color: var(--input-border) !important;
+  color: var(--input-text) !important;
 }
 #contact input::placeholder,
 #contact textarea::placeholder {
-  opacity: 0.8; 
+  color: var(--text-muted) !important;
+  opacity: 0.6;
 }
 
 /* Global Navbar sticky color support */
@@ -158,7 +171,7 @@ nav.backdrop-blur-md {
 }
 html.dark nav.bg-white\/95,
 html.dark nav.backdrop-blur-md {
-  background-color: rgba(30, 41, 59, 0.95) !important; 
+  background-color: rgba(15, 23, 42, 0.9) !important;
   border-color: var(--border-main) !important;
 }
 
@@ -171,46 +184,106 @@ footer {
 
 /* --- Admin Panel Dynamic Theme Adapter Styles --- */
 
-.fixed.z-50 div.bg-slate-900,
-html.dark .fixed.z-50 div.bg-slate-900 {
-  background-color: var(--bg-card-inner) !important;
+/* Theme-proof background cards inside admin panel (Light mode card background is beautiful slate-50/100 gray, and dark mode is slate-900) */
+.fixed.z-50 div.bg-slate-900 {
+  background-color: var(--bg-card) !important;
   border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+html.dark .fixed.z-50 div.bg-slate-900 {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
 }
 
+/* Theme-proof card headers */
 .fixed.z-50 h3.text-white,
-.fixed.z-50 div.bg-slate-900 h3,
+.fixed.z-50 div.bg-slate-900 h3 {
+  color: var(--text-main) !important;
+  border-color: var(--border-main) !important;
+}
 html.dark .fixed.z-50 h3.text-white,
 html.dark .fixed.z-50 div.bg-slate-900 h3 {
-  border-color: var(--border-main) !important;
+  color: #ffffff !important;
+  border-color: #1e293b !important;
 }
 
+/* Theme-proof general headings & text labels */
+.fixed.z-50 h1.text-white, 
+.fixed.z-50 h2.text-white, 
+.fixed.z-50 h4.text-white,
+.fixed.z-50 span.text-white {
+  color: var(--text-main) !important;
+}
+html.dark .fixed.z-50 h1.text-white, 
+html.dark .fixed.z-50 h2.text-white, 
+html.dark .fixed.z-50 h4.text-white,
+html.dark .fixed.z-50 span.text-white {
+  color: #ffffff !important;
+}
+
+/* Theme-proof input & textarea elements (Light mode is pure white with light gray border, dark mode is slate-950) */
 .fixed.z-50 .bg-slate-950,
 .fixed.z-50 input:not([type="color"]):not([type="checkbox"]):not([type="file"]),
 .fixed.z-50 textarea,
-.fixed.z-50 select,
+.fixed.z-50 select {
+  background-color: var(--bg-card-inner) !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
 html.dark .fixed.z-50 .bg-slate-950,
 html.dark .fixed.z-50 input:not([type="color"]):not([type="checkbox"]):not([type="file"]),
 html.dark .fixed.z-50 textarea,
 html.dark .fixed.z-50 select {
-  background-color: var(--input-bg) !important;
-  border-color: var(--input-border) !important;
+  background-color: #030712 !important;
+  border-color: #1e293b !important;
+  color: #cbd5e1 !important;
 }
 
+/* Theme-proof nested layouts and dash lines */
 .fixed.z-50 .bg-slate-950\/50,
 .fixed.z-50 .bg-slate-950\/30,
-.fixed.z-50 .bg-slate-950\/45,
-html.dark .fixed.z-50 .bg-slate-950\/50,
-html.dark .fixed.z-50 .bg-slate-950\/30,
-html.dark .fixed.z-50 .bg-slate-950\/45 {
+.fixed.z-50 .bg-slate-950\/45 {
   background-color: var(--bg-app) !important;
   border-color: var(--border-main) !important;
 }
+html.dark .fixed.z-50 .bg-slate-950\/50,
+html.dark .fixed.z-50 .bg-slate-950\/30,
+html.dark .fixed.z-50 .bg-slate-950\/45 {
+  background-color: rgba(3, 7, 18, 0.5) !important;
+  border-color: #1e293b !important;
+}
 
+/* Theme-proof field label captions and secondary texts */
+.fixed.z-50 .text-slate-400 {
+  color: var(--text-muted) !important;
+}
+html.dark .fixed.z-50 .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.fixed.z-50 .text-slate-300 {
+  color: var(--text-subtitle) !important;
+}
+html.dark .fixed.z-50 .text-slate-300 {
+  color: #cbd5e1 !important;
+}
+
+/* Theme-proof grid/card accent board and lines */
 .fixed.z-50 .border-slate-800,
-.fixed.z-50 .border-slate-850,
+.fixed.z-50 .border-slate-850 {
+  border-color: var(--border-main) !important;
+}
 html.dark .fixed.z-50 .border-slate-800,
 html.dark .fixed.z-50 .border-slate-850 {
-  border-color: var(--border-main) !important;
+  border-color: #1e293b !important;
+}
+
+.fixed.z-50 .text-slate-200 {
+  color: var(--text-main) !important;
+}
+html.dark .fixed.z-50 .text-slate-200 {
+  color: #e2e8f0 !important;
 }
 
 /* Ensure color picker box values don't reverse hashtags in RTL */
@@ -220,54 +293,113 @@ html.dark .fixed.z-50 .border-slate-850 {
   text-align: left !important;
 }
 
+/* --- Unbeatable High-Contrast Text Color Adaptations --- */
 
-/* ==========================================================================
-   🚨 تصفير وإلغاء أي خلفية بيضاء تظهر في الدارك مودي مع توزيع تدرج عائلة الأبيض 🚨
-   ========================================================================== */
-
-html.dark {
-  /* 1. مسح أي خلفيات بيضاء مدمجة بكلاسات Tailwind القديمة وتحويلها لدرجات داكنة محترفة */
-  .bg-white, 
-  .bg-slate-50, 
-  .bg-slate-100, 
-  .bg-gray-50, 
-  .bg-gray-100,
-  div[class*="bg-white"],
-  div[class*="bg-slate-50"],
-  div[class*="bg-gray-50"] {
-    background-color: var(--bg-card) !important;
-    border-color: var(--border-main) !important;
-  }
+/* Global text transitions */
+body, p, span, h1, h2, h3, h4, h5, h6, a, li, label, div {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* 2. توزيع درجات "الأبيض" الذكية رغماً عن كلاسات الـ text-slate المكتوبة بجافاسكريبت */
-html.dark {
-  /* الدرجة الأولى: الأبيض الناصع المشع للعناوين الكبرى لتعطي قوة بصرية */
-  h1, h2, h3, .text-3xl, .text-2xl, .text-xl, strong, th {
-    color: var(--text-main) !important;
-    --tw-text-opacity: 1 !important;
-  }
-
-  /* الدرجة الثانية: الأبيض العاجي المريح جداً للفقرات الطويلة والنصوص الرئيسية */
-  p, li, label, td, input, textarea, select {
-    color: var(--text-subtitle) !important;
-    --tw-text-opacity: 1 !important;
-  }
-
-  /* الدرجة الثالثة: الأبيض الباهت (الرمادي الفاتح) للتلميحات المساعدة والأيقونات والتواريخ */
-  span, small, .text-sm, .text-xs, svg {
-    color: var(--text-muted) !important;
-    --tw-text-opacity: 1 !important;
-  }
-  
-  /* معالجة خاصة لـ الأزرار لتأخذ خطاً أبيضاً بارزاً */
-  button, a {
-    color: #ffffff !important;
-  }
-
-  /* معالجة النصوص داخل حقول النص */
-  input::placeholder, 
-  textarea::placeholder {
-    color: #94a3b8 !important; /* لون واضح للـ Placeholder */
-  }
+/* 1. DARK MODE DEFINITIVE LIGHT-GRAY/WHITE TEXT COHESION */
+html.dark,
+html.dark body {
+  background-color: #030712 !important;
+  color: #f1f5f9 !important;
 }
+
+/* Base text elements in dark mode */
+html.dark p,
+html.dark li,
+html.dark label,
+html.dark span:not([style*="color"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-teal"]):not([class*="text-rose"]):not([class*="text-orange"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-blue"]),
+html.dark a:not([style*="color"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-teal"]):not([class*="text-rose"]):not([class*="text-orange"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-blue"]) {
+  color: #f1f5f9 !important; /* Force readable content text */
+}
+
+/* Secondary/muted text elements in dark mode */
+html.dark .text-slate-400,
+html.dark .text-slate-450,
+html.dark .text-slate-500,
+html.dark .text-slate-505,
+html.dark .text-slate-550,
+html.dark .text-slate-600 {
+  color: #cbd5e1 !important; /* Clear light muted silver-gray */
+}
+
+/* Extremely muted utility text in dark mode */
+html.dark .text-slate-650,
+html.dark .text-slate-700,
+html.dark .text-slate-750,
+html.dark .text-slate-755 {
+  color: #94a3b8 !important; /* Clean soft silver-gray */
+}
+
+/* High attention headings & labels in dark mode */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6,
+html.dark .text-slate-800,
+html.dark .text-slate-805,
+html.dark .text-slate-850,
+html.dark .text-slate-900 {
+  color: #ffffff !important; /* Bright high-contrast white */
+}
+
+/* 2. LIGHT MODE DEFINITIVE DARK-GRAY/BLACK TEXT COHESION */
+html:not(.dark),
+html:not(.dark) body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html:not(.dark) p,
+html:not(.dark) li,
+html:not(.dark) label,
+html:not(.dark) span:not([style*="color"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-teal"]):not([class*="text-rose"]):not([class*="text-orange"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-blue"]),
+html:not(.dark) a:not([style*="color"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-teal"]):not([class*="text-rose"]):not([class*="text-orange"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-blue"]) {
+  color: #1e293b !important; /* Highly readable near-black content text */
+}
+
+/* Muted descriptive text branches in light mode */
+html:not(.dark) .text-slate-400,
+html:not(.dark) .text-slate-450,
+html:not(.dark) .text-slate-500,
+html:not(.dark) .text-slate-505 {
+  color: #57687e !important; /* Clean visible muted gray-blue */
+}
+
+/* Darker descriptive text in light mode */
+html:not(.dark) .text-slate-550,
+html:not(.dark) .text-slate-600,
+html:not(.dark) .text-slate-650,
+html:not(.dark) .text-slate-700 {
+  color: #334155 !important; /* Visible charcoal slate */
+}
+
+/* Main title headings & labels in light mode */
+html:not(.dark) h1,
+html:not(.dark) h2,
+html:not(.dark) h3,
+html:not(.dark) h4,
+html:not(.dark) h5,
+html:not(.dark) h6,
+html:not(.dark) .text-slate-750,
+html:not(.dark) .text-slate-755,
+html:not(.dark) .text-slate-800,
+html:not(.dark) .text-slate-805,
+html:not(.dark) .text-slate-850,
+html:not(.dark) .text-slate-900 {
+  color: #0d1527 !important; /* Premium deep black-blue */
+}
+
+/* Active interactive states */
+html.dark .hover\:text-slate-900:hover {
+  color: #ffffff !important;
+}
+html:not(.dark) .hover\:text-slate-900:hover {
+  color: #0f172a !important;
+}
+

@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "portfolio": {
+      "title": "Portfolio Config",
+      "description": "The active portfolio structure",
+      "type": "object",
+      "properties": {
+        "personalInfo": { "type": "object", "description": "Personal info configuration" },
+        "skills": { "type": "array", "description": "Array of skills with levels and titles" },
+        "projects": { "type": "array", "description": "Array of portfolio projects" }
+      }
+    },
+    "message": {
+      "title": "Contact Message",
+      "description": "Message submitted by portfolio visitors",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderName": { "type": "string" },
+        "senderEmail": { "type": "string" },
+        "subject": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "senderName", "senderEmail", "content", "timestamp"]
+    }
+  },
+  "firestore": {
+    "portfolio/active": {
+      "schema": "portfolio",
+      "description": "Active portfolio configuration"
+    },
+    "messages/{messageId}": {
+      "schema": "message",
+      "description": "Collection of submitted contact messages"
+    }
+  }
+}

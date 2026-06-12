@@ -2,6 +2,72 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
+
+// --- Conforming Error Handling definitions for platform diagnostics ---
+enum OperationType {
+  CREATE = "create",
+  UPDATE = "update",
+  DELETE = "delete",
+  LIST = "list",
+  GET = "get",
+  WRITE = "write",
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+    isAnonymous?: boolean | null;
+    tenantId?: string | null;
+    providerInfo?: {
+      providerId?: string | null;
+      email?: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errMsg = error instanceof Error ? error.message : String(error);
+  const errInfo: FirestoreErrorInfo = {
+    error: errMsg,
+    authInfo: {
+      userId: null,
+      email: null,
+      emailVerified: null,
+      isAnonymous: null,
+      tenantId: null,
+      providerInfo: []
+    },
+    operationType,
+    path
+  };
+  
+  console.error("Firestore Error logged for diagnostics:", JSON.stringify(errInfo));
+  return errInfo;
+}
+
+// Read Firebase config safely at runtime
+const configPath = path.join(process.cwd(), "firebase-applet-config.json");
+let db: any = null;
+
+try {
+  if (fs.existsSync(configPath)) {
+    const firebaseConfig = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    const firebaseApp = initializeApp(firebaseConfig);
+    db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
+    console.log("[Firebase] Firestore client initialized successfully!");
+  } else {
+    console.warn("[Firebase] Config missing. Running in local file-system fallback mode.");
+  }
+} catch (err) {
+  console.error("[Firebase] Initialization error:", err);
+}
 
 async function startServer() {
   const app = express();
@@ -25,14 +91,44 @@ async function startServer() {
   // --- API Routes ---
 
   // 1. Get Portfolio Data
-  app.get("/api/portfolio", (req, res) => {
+  app.get("/api/portfolio", async (req, res) => {
     try {
+      if (db) {
+        try {
+          const docRef = doc(db, "portfolio", "active");
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            return res.json(docSnap.data());
+          }
+        } catch (dbErr) {
+          handleFirestoreError(dbErr, OperationType.GET, "portfolio/active");
+          console.warn("[Firebase] Firestore load failed, using cache fallback:", dbErr);
+        }
+      }
+
       if (fs.existsSync(activePath)) {
         const data = fs.readFileSync(activePath, "utf8");
-        return res.json(JSON.parse(data));
+        const parsed = JSON.parse(data);
+        if (db) {
+          try {
+            await setDoc(doc(db, "portfolio", "active"), parsed);
+            console.log("[Firebase] Cache bootstrapped into Firestore.");
+          } catch (e) {
+            handleFirestoreError(e, OperationType.WRITE, "portfolio/active");
+          }
+        }
+        return res.json(parsed);
       } else if (fs.existsSync(defaultPath)) {
         const data = fs.readFileSync(defaultPath, "utf8");
-        return res.json(JSON.parse(data));
+        const parsed = JSON.parse(data);
+        if (db) {
+          try {
+            await setDoc(doc(db, "portfolio", "active"), parsed);
+          } catch (e) {
+            handleFirestoreError(e, OperationType.WRITE, "portfolio/active");
+          }
+        }
+        return res.json(parsed);
       } else {
         return res.status(404).json({ error: "Default portfolio data not found" });
       }
@@ -43,10 +139,24 @@ async function startServer() {
   });
 
   // 2. Save/Update Portfolio Data
-  app.post("/api/portfolio", (req, res) => {
+  app.post("/api/portfolio", async (req, res) => {
     try {
       const data = req.body;
+
+      // 1. Always save locally as a backup
       fs.writeFileSync(activePath, JSON.stringify(data, null, 2), "utf8");
+
+      // 2. Transmit to global persistent Firestore
+      if (db) {
+        try {
+          await setDoc(doc(db, "portfolio", "active"), data);
+          console.log("[Firebase] Successfully saved update to Firestore!");
+        } catch (dbErr) {
+          handleFirestoreError(dbErr, OperationType.WRITE, "portfolio/active");
+          console.error("[Firebase] Firestore save failed:", dbErr);
+        }
+      }
+
       return res.json({ success: true, message: "Portfolio updated successfully" });
     } catch (error) {
       console.error("Error saving portfolio data:", error);
@@ -55,8 +165,24 @@ async function startServer() {
   });
 
   // 3. Get Contact Messages
-  app.get("/api/messages", (req, res) => {
+  app.get("/api/messages", async (req, res) => {
     try {
+      if (db) {
+        try {
+          const querySnapshot = await getDocs(collection(db, "messages"));
+          const messages: any[] = [];
+          querySnapshot.forEach((docSnap) => {
+            messages.push({ ...docSnap.data(), id: docSnap.id });
+          });
+          // Sort descendingly by date
+          messages.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          return res.json(messages);
+        } catch (dbErr) {
+          handleFirestoreError(dbErr, OperationType.LIST, "messages");
+          console.warn("[Firebase] Firestore messages fetch failed, falling back:", dbErr);
+        }
+      }
+
       if (fs.existsSync(messagesPath)) {
         const data = fs.readFileSync(messagesPath, "utf8");
         return res.json(JSON.parse(data));
@@ -70,25 +196,16 @@ async function startServer() {
   });
 
   // 4. Save/Post Contact Message
-  app.post("/api/messages", (req, res) => {
+  app.post("/api/messages", async (req, res) => {
     try {
       const { senderName, senderEmail, subject, content } = req.body;
       if (!senderName || !senderEmail || !content) {
         return res.status(400).json({ error: "Please fill out all required fields" });
       }
 
-      let messages: any[] = [];
-      if (fs.existsSync(messagesPath)) {
-        const data = fs.readFileSync(messagesPath, "utf8");
-        try {
-          messages = JSON.parse(data);
-        } catch (e) {
-          messages = [];
-        }
-      }
-
+      const mId = "msg_" + Date.now().toString() + "_" + Math.random().toString(36).substr(2, 5);
       const newMessage = {
-        id: "msg_" + Date.now().toString() + "_" + Math.random().toString(36).substr(2, 5),
+        id: mId,
         senderName,
         senderEmail,
         subject: subject || "بدون موضوع",
@@ -96,8 +213,29 @@ async function startServer() {
         timestamp: new Date().toISOString()
       };
 
+      // 1. Submit to Firestore
+      if (db) {
+        try {
+          await setDoc(doc(db, "messages", mId), newMessage);
+        } catch (dbErr) {
+          handleFirestoreError(dbErr, OperationType.WRITE, "messages/" + mId);
+          console.error("[Firebase] Firestore message save failed:", dbErr);
+        }
+      }
+
+      // 2. Submit to local sync list
+      let messages: any[] = [];
+      if (fs.existsSync(messagesPath)) {
+        try {
+          const raw = fs.readFileSync(messagesPath, "utf8");
+          messages = JSON.parse(raw);
+        } catch (e) {
+          messages = [];
+        }
+      }
       messages.unshift(newMessage);
       fs.writeFileSync(messagesPath, JSON.stringify(messages, null, 2), "utf8");
+
       return res.json({ success: true, message: "Message sent successfully" });
     } catch (error) {
       console.error("Error adding message:", error);
@@ -106,17 +244,29 @@ async function startServer() {
   });
 
   // 5. Delete Contact Message
-  app.delete("/api/messages/:id", (req, res) => {
+  app.delete("/api/messages/:id", async (req, res) => {
     try {
       const { id } = req.params;
+
+      // 1. Terminate from Firestore
+      if (db) {
+        try {
+          await deleteDoc(doc(db, "messages", id));
+        } catch (dbErr) {
+          handleFirestoreError(dbErr, OperationType.DELETE, "messages/" + id);
+          console.error("[Firebase] Firestore message delete failed:", dbErr);
+        }
+      }
+
+      // 2. Terminate from local backup
       if (fs.existsSync(messagesPath)) {
         const data = fs.readFileSync(messagesPath, "utf8");
         let messages = JSON.parse(data);
         messages = messages.filter((msg: any) => msg.id !== id);
         fs.writeFileSync(messagesPath, JSON.stringify(messages, null, 2), "utf8");
-        return res.json({ success: true, message: "Message deleted successfully" });
       }
-      return res.status(404).json({ error: "No messages database found" });
+
+      return res.json({ success: true, message: "Message deleted successfully" });
     } catch (error) {
       console.error("Error deleting message:", error);
       return res.status(500).json({ error: "Internal server error" });

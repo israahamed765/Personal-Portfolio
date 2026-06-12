@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ShieldCheck, Menu, X, Code2, Sun, Moon, Languages } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 interface NavbarProps {
   onAdminClick: () => void;
@@ -162,76 +163,136 @@ export default function Navbar({
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={handleLangToggle}
-              className="p-2 rounded-xl border border-slate-250 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold"
+              className="p-2 rounded-xl border border-slate-200 hover:border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold"
             >
               {lang === "ar" ? "EN" : "عربي"}
             </button>
             <button
               onClick={handleThemeToggle}
-              className="p-2 rounded-xl border border-slate-250 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+              className="p-2 rounded-xl border border-slate-200 hover:border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-300"
             >
-              {theme === "dark" ? <Sun className="h-4 w-4 text-emerald-400" /> : <Moon className="h-4 w-4 text-orange-500" />}
+              {theme === "dark" ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-blue-600" />}
             </button>
             <button
-              onClick={onAdminClick}
-              className="p-2 rounded-xl border border-slate-250 dark:border-slate-800 text-slate-650 dark:text-slate-300"
+              onClick={() => setIsOpen(true)}
+              className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
-              <ShieldCheck className="h-5 w-5" style={{ color: isAdminLoggedIn ? (accentColor || "#f97316") : "" }} />
-            </button>
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-xl border border-slate-250 dark:border-slate-800 text-slate-650 dark:text-slate-200 focus:outline-none"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <Menu className="h-5 w-5" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/80 px-4 pt-2 pb-6 space-y-2 text-right">
-          {navItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
+      {/* Advanced Mobile Sidebar Drawer Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-50 md:hidden flex overflow-hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
+            {/* Backdrop Blur Layer */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="block px-3 py-2.5 rounded-xl text-base font-semibold text-slate-755 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
+            />
+
+            {/* Sliding Drawer Cover Panel */}
+            <motion.div
+              initial={{ x: lang === "ar" ? "100%" : "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: lang === "ar" ? "100%" : "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 220 }}
+              className={`absolute top-0 bottom-0 w-[290px] max-w-[85vw] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xl p-6 flex flex-col justify-between z-10 ${
+                lang === "ar" ? "right-0 border-l" : "left-0 border-r"
+              }`}
             >
-              {item.name}
-            </a>
-          ))}
-          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-3 px-3">
-            {isAdminLoggedIn ? (
-              <div className="flex items-center justify-between">
-                <span className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/20 flex items-center gap-1 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  {t.adminActive}
-                </span>
+              <div>
+                {/* Header block with Logo and Close trigger */}
+                <div className="flex items-center justify-between pb-5 border-b border-slate-100 dark:border-slate-800/80 mb-6">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="p-2 rounded-lg text-white flex items-center justify-center font-sans"
+                      style={{ backgroundColor: accentColor || "#f97316" }}
+                    >
+                      <Code2 className="h-5 w-5" />
+                    </div>
+                    <span className="text-base font-black tracking-tight text-slate-900 dark:text-white">
+                      {t.logoFirst} <span className="text-slate-450">{t.logoSecond}</span>
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800/50"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Animated Navigation Items Links Stack */}
+                <div className="space-y-1.5 font-sans">
+                  {navItems.map((item, idx) => (
+                    <motion.a
+                      initial={{ opacity: 0, x: lang === "ar" ? 20 : -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className="group flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all text-right rtl:text-right ltr:text-left"
+                    >
+                      <span>{item.name}</span>
+                      <span 
+                        className="w-1.5 h-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ backgroundColor: accentColor || "#f97316" }}
+                      />
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Setting controls, Admin panel entries and custom states inside drawer footer */}
+              <div className="space-y-4 pt-6 border-t border-slate-100 dark:border-slate-800/80">
+                {/* Admin Status Block */}
+                {isAdminLoggedIn && (
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
+                    <span className="text-xs text-emerald-650 dark:text-emerald-400 flex items-center gap-1.5 font-bold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      {t.adminActive}
+                    </span>
+                    <button
+                      onClick={() => {
+                        onLogout();
+                        setIsOpen(false);
+                      }}
+                      className="text-[11px] font-bold text-rose-500 hover:text-rose-400 transition-colors bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20"
+                    >
+                      {t.logout}
+                    </button>
+                  </div>
+                )}
+
+                {/* Admin Dashboard Action Trigger */}
                 <button
                   onClick={() => {
-                    onLogout();
+                    onAdminClick();
                     setIsOpen(false);
                   }}
-                  className="text-xs text-rose-500 hover:text-rose-400 font-medium transition-colors bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-lg border border-rose-500/20"
+                  className="w-full flex items-center justify-center gap-2 text-xs font-bold px-4 py-3 rounded-xl transition-all border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                  style={{ borderColor: isAdminLoggedIn ? (accentColor || "#f97316") : "" }}
                 >
-                  {t.logout}
+                  <ShieldCheck className="h-4 w-4" style={{ color: isAdminLoggedIn ? (accentColor || "#f97316") : "" }} />
+                  {t.adminEntry}
                 </button>
+
+                {/* Quick Info / branding footer */}
+                <p className="text-[10px] text-center font-mono text-slate-400 dark:text-slate-500 select-none">
+                  © {new Date().getFullYear()} {t.logoFirst} {t.logoSecond}
+                </p>
               </div>
-            ) : null}
-            <button
-              onClick={() => {
-                onAdminClick();
-                setIsOpen(false);
-              }}
-              className="w-full flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-xl transition-all border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
-            >
-              <ShieldCheck className="h-4 w-4" style={{ color: isAdminLoggedIn ? (accentColor || "#f97316") : "" }} />
-              {t.adminEntry}
-            </button>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
