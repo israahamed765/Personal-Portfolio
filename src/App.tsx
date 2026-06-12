@@ -18,7 +18,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   const [lang, setLang] = useState<"ar" | "en">(encodeURI(localStorage.getItem("portfolio_lang") || "ar") as "ar" | "en");
-  const [theme, setTheme] = useState<"dark" | "light">(encodeURI(localStorage.getItem("portfolio_theme") || "dark") as "dark" | "light");
+  const [theme, setTheme] = useState<"dark" | "light">("light");
 
   // Sync language attribute to document roots
   useEffect(() => {
@@ -28,16 +28,12 @@ export default function App() {
     root.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
   }, [lang]);
 
-  // Sync dark mode class names to document roots
+  // Sync light mode to document roots
   useEffect(() => {
-    localStorage.setItem("portfolio_theme", theme);
+    localStorage.setItem("portfolio_theme", "light");
     const root = window.document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [theme]);
+    root.classList.remove("dark");
+  }, []);
 
   // Initialize and load active data
   useEffect(() => {
@@ -142,6 +138,7 @@ export default function App() {
           setLang={setLang}
           theme={theme}
           setTheme={setTheme}
+          avatarUrl={personalInfo.avatarUrl}
         />
 
         {/* Hero Overview */}

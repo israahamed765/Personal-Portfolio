@@ -11,6 +11,7 @@ interface NavbarProps {
   setLang: (lang: "ar" | "en") => void;
   theme: "dark" | "light";
   setTheme: (theme: "dark" | "light") => void;
+  avatarUrl?: string;
 }
 
 export default function Navbar({
@@ -21,7 +22,8 @@ export default function Navbar({
   lang,
   setLang,
   theme,
-  setTheme
+  setTheme,
+  avatarUrl
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -82,12 +84,22 @@ export default function Navbar({
         <div className="relative flex items-center justify-between h-12">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center gap-2">
-            <div 
-              className="p-2 rounded-xl text-white flex items-center justify-center shadow-lg transform hover:rotate-12 transition-transform duration-300"
-              style={{ backgroundColor: accentColor || "#f97316" }}
-            >
-              <Code2 className="h-6 w-6" />
-            </div>
+            {avatarUrl ? (
+              <img 
+                src={avatarUrl} 
+                alt="Logo Avatar" 
+                className="h-10 w-10 rounded-xl object-cover border-2 shadow-lg transform hover:rotate-12 transition-transform duration-300"
+                referrerPolicy="no-referrer"
+                style={{ borderColor: accentColor || "#f97316" }}
+              />
+            ) : (
+              <div 
+                className="p-2 rounded-xl text-white flex items-center justify-center shadow-lg transform hover:rotate-12 transition-transform duration-300"
+                style={{ backgroundColor: accentColor || "#f97316" }}
+              >
+                <Code2 className="h-6 w-6" />
+              </div>
+            )}
             <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white hidden sm:block">
               {t.logoFirst} <span className="text-slate-500 dark:text-slate-450">{t.logoSecond}</span>
             </span>
@@ -120,15 +132,6 @@ export default function Navbar({
             >
               <Languages className="h-4 w-4" />
               <span>{lang === "ar" ? "EN" : "عربي"}</span>
-            </button>
-
-            {/* Theme Toggle */}
-            <button
-              onClick={handleThemeToggle}
-              className="p-2.5 rounded-xl border border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all cursor-pointer focus:outline-none"
-              title={theme === "dark" ? "Light Mode" : "Dark Mode"}
-            >
-              {theme === "dark" ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-blue-600" />}
             </button>
 
             {/* Logout State Indicator */}
@@ -168,12 +171,6 @@ export default function Navbar({
               {lang === "ar" ? "EN" : "عربي"}
             </button>
             <button
-              onClick={handleThemeToggle}
-              className="p-2 rounded-xl border border-slate-200 hover:border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-300"
-            >
-              {theme === "dark" ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-blue-600" />}
-            </button>
-            <button
               onClick={() => setIsOpen(true)}
               className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
@@ -210,12 +207,22 @@ export default function Navbar({
                 {/* Header block with Logo and Close trigger */}
                 <div className="flex items-center justify-between pb-5 border-b border-slate-100 dark:border-slate-800/80 mb-6">
                   <div className="flex items-center gap-2">
-                    <div 
-                      className="p-2 rounded-lg text-white flex items-center justify-center font-sans"
-                      style={{ backgroundColor: accentColor || "#f97316" }}
-                    >
-                      <Code2 className="h-5 w-5" />
-                    </div>
+                    {avatarUrl ? (
+                      <img 
+                        src={avatarUrl} 
+                        alt="Logo Avatar" 
+                        className="h-9 w-9 rounded-lg object-cover border shadow-sm"
+                        referrerPolicy="no-referrer"
+                        style={{ borderColor: accentColor || "#f97316" }}
+                      />
+                    ) : (
+                      <div 
+                        className="p-2 rounded-lg text-white flex items-center justify-center font-sans"
+                        style={{ backgroundColor: accentColor || "#f97316" }}
+                      >
+                        <Code2 className="h-5 w-5" />
+                      </div>
+                    )}
                     <span className="text-base font-black tracking-tight text-slate-900 dark:text-white">
                       {t.logoFirst} <span className="text-slate-450">{t.logoSecond}</span>
                     </span>

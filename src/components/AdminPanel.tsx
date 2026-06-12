@@ -4,7 +4,7 @@ import {
   Lock, ShieldAlert, Key, Save, Eye, EyeOff, LayoutGrid, User, BookOpen, 
   FolderGit, Mail, Plus, Trash2, ArrowLeft, Download, Upload, LogOut, Check,
   Sliders, Cpu, Palette, Terminal, GitBranch, Globe, Server, Smartphone, ExternalLink, HelpCircle,
-  Menu, X, Sun, Moon
+  Menu, X, Sun, Moon, Pencil
 } from "lucide-react";
 import { PortfolioData, PersonalInfo, Skill, Project, Message } from "../types";
 
@@ -81,6 +81,9 @@ export default function AdminPanel({
     techTags: []
   });
   const [techInput, setTechInput] = useState("");
+
+  const [editingSkillId, setEditingSkillId] = useState<string | null>(null);
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
 
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -186,9 +189,52 @@ export default function AdminPanel({
     handleSaveAll(personal, updated, projects);
   };
 
+  const handleStartEditSkill = (skill: Skill) => {
+    setEditingSkillId(skill.id);
+    setNewSkill({
+      name: skill.name,
+      name_ar: skill.name_ar || skill.name,
+      name_en: skill.name_en || "",
+      level: skill.level,
+      category: skill.category,
+      iconName: skill.iconName || "Code"
+    });
+  };
+
+  const handleUpdateSkill = () => {
+    if (!editingSkillId) return;
+    const skillNameAr = newSkill.name_ar?.trim() || newSkill.name?.trim() || "";
+    if (!skillNameAr) return;
+    const updated = skills.map((s) => {
+      if (s.id === editingSkillId) {
+        return {
+          ...s,
+          ...newSkill,
+          name: skillNameAr,
+          name_ar: skillNameAr,
+          name_en: newSkill.name_en?.trim() || skillNameAr
+        };
+      }
+      return s;
+    });
+    setSkills(updated);
+    setEditingSkillId(null);
+    setNewSkill({ name: "", name_ar: "", name_en: "", level: 80, category: "frontend", iconName: "Code" });
+    handleSaveAll(personal, updated, projects);
+  };
+
+  const handleCancelEditSkill = () => {
+    setEditingSkillId(null);
+    setNewSkill({ name: "", name_ar: "", name_en: "", level: 80, category: "frontend", iconName: "Code" });
+  };
+
   const handleDeleteSkill = (id: string) => {
     const updated = skills.filter((s) => s.id !== id);
     setSkills(updated);
+    if (editingSkillId === id) {
+      setEditingSkillId(null);
+      setNewSkill({ name: "", name_ar: "", name_en: "", level: 80, category: "frontend", iconName: "Code" });
+    }
     handleSaveAll(personal, updated, projects);
   };
 
@@ -232,9 +278,104 @@ export default function AdminPanel({
     handleSaveAll(personal, skills, updated);
   };
 
+  const handleStartEditProject = (proj: Project) => {
+    setEditingProjectId(proj.id);
+    setNewProject({
+      title: proj.title,
+      title_ar: proj.title_ar || proj.title,
+      title_en: proj.title_en || "",
+      description: proj.description,
+      description_ar: proj.description_ar || proj.description,
+      description_en: proj.description_en || "",
+      imageUrl: proj.imageUrl,
+      demoUrl: proj.demoUrl,
+      githubUrl: proj.githubUrl,
+      techTags: proj.techTags
+    });
+    setTechInput(proj.techTags.join(", "));
+  };
+
+  const handleUpdateProject = () => {
+    if (!editingProjectId) return;
+    const titleVal = newProject.title_ar?.trim() || newProject.title?.trim() || "";
+    const descVal = newProject.description_ar?.trim() || newProject.description?.trim() || "";
+    if (!titleVal || !descVal) return;
+    const tags = techInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
+
+    const updated = projects.map((p) => {
+      if (p.id === editingProjectId) {
+        return {
+          ...p,
+          ...newProject,
+          title: titleVal,
+          title_ar: titleVal,
+          title_en: newProject.title_en?.trim() || titleVal,
+          description: descVal,
+          description_ar: descVal,
+          description_en: newProject.description_en?.trim() || descVal,
+          techTags: tags
+        };
+      }
+      return p;
+    });
+
+    setProjects(updated);
+    setEditingProjectId(null);
+    setNewProject({
+      title: "",
+      title_ar: "",
+      title_en: "",
+      description: "",
+      description_ar: "",
+      description_en: "",
+      imageUrl: "",
+      demoUrl: "",
+      githubUrl: "",
+      techTags: []
+    });
+    setTechInput("");
+    handleSaveAll(personal, skills, updated);
+  };
+
+  const handleCancelEditProject = () => {
+    setEditingProjectId(null);
+    setNewProject({
+      title: "",
+      title_ar: "",
+      title_en: "",
+      description: "",
+      description_ar: "",
+      description_en: "",
+      imageUrl: "",
+      demoUrl: "",
+      githubUrl: "",
+      techTags: []
+    });
+    setTechInput("");
+  };
+
   const handleDeleteProject = (id: string) => {
     const updated = projects.filter((p) => p.id !== id);
     setProjects(updated);
+    if (editingProjectId === id) {
+      setEditingProjectId(null);
+      setNewProject({
+        title: "",
+        title_ar: "",
+        title_en: "",
+        description: "",
+        description_ar: "",
+        description_en: "",
+        imageUrl: "",
+        demoUrl: "",
+        githubUrl: "",
+        techTags: []
+      });
+      setTechInput("");
+    }
     handleSaveAll(personal, skills, updated);
   };
 
@@ -422,14 +563,6 @@ export default function AdminPanel({
         </div>
         
         <div className="flex items-center gap-2">
-          {/* Quick theme control */}
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg transition-colors border border-slate-200 dark:border-slate-800"
-          >
-            {theme === "dark" ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-slate-600" />}
-          </button>
-          
           <button
             onClick={() => {
               handleSaveAll();
@@ -525,27 +658,6 @@ export default function AdminPanel({
 
               {/* Mobile Drawer Footer */}
               <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
-                {/* Theme toggle option inside Mobile Drawer */}
-                <div className="flex items-center justify-between pb-1">
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">المظهر النشط</span>
-                  <button
-                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    className="flex items-center gap-2 px-3 py-1.5 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 transition-all shadow-sm"
-                  >
-                    {theme === "dark" ? (
-                      <>
-                        <Sun className="h-3.5 w-3.5 text-amber-500" />
-                        <span>مظهر فاتح</span>
-                      </>
-                    ) : (
-                      <>
-                        <Moon className="h-3.5 w-3.5 text-slate-655" />
-                        <span>مظهر داكن</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
                 <button
                   onClick={() => {
                     handleSaveAll();
@@ -601,16 +713,6 @@ export default function AdminPanel({
                 <p className="text-[9px] text-slate-500 font-mono">ISRAA059 ACTIVE</p>
               </div>
             </div>
-
-            {/* Live Theme Toggle Button */}
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              type="button"
-              className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-all shadow-sm"
-              title={theme === "dark" ? "تفعيل المظهر الفاتح" : "تفعيل المظهر الداكن"}
-            >
-              {theme === "dark" ? <Sun className="h-4.5 w-4.5 text-amber-500" /> : <Moon className="h-4.5 w-4.5 text-slate-650" />}
-            </button>
           </div>
 
           {/* Nav Items */}
@@ -1044,7 +1146,7 @@ export default function AdminPanel({
                         <label className="text-[11px] font-bold text-slate-400">رابط Twitter/X</label>
                         <input
                           type="url"
-                          value={personal.twitterUrl}
+                          value={personal.twitterUrl || ""}
                           onChange={(e) => setPersonal({ ...personal, twitterUrl: e.target.value })}
                           className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-slate-300 text-xs text-left font-mono dir-ltr"
                         />
@@ -1054,7 +1156,7 @@ export default function AdminPanel({
                         <label className="text-[11px] font-bold text-slate-400">رابط واتساب (مباشر)</label>
                         <input
                           type="url"
-                          value={personal.whatsappUrl}
+                          value={personal.whatsappUrl || ""}
                           onChange={(e) => setPersonal({ ...personal, whatsappUrl: e.target.value })}
                           placeholder="https://wa.me/9665..."
                           className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-slate-300 text-xs text-left font-mono dir-ltr"
@@ -1080,7 +1182,9 @@ export default function AdminPanel({
                   
                   {/* Skill adder form */}
                   <div className="md:col-span-5 bg-slate-900 border border-slate-850 p-6 rounded-3xl space-y-4">
-                    <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-3" style={{ color: personal.accentColor }}>إضافة مهارة جديدة</h3>
+                    <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-3" style={{ color: personal.accentColor }}>
+                      {editingSkillId ? "تعديل المهارة المحددة" : "إضافة مهارة جديدة"}
+                    </h3>
                     
                     <div className="space-y-4">
                       <div className="space-y-3">
@@ -1162,14 +1266,33 @@ export default function AdminPanel({
                         </div>
                       </div>
 
-                      <button
-                        onClick={handleAddSkill}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-white uppercase tracking-wider select-none cursor-pointer focus:outline-none"
-                        style={{ backgroundColor: personal.accentColor }}
-                      >
-                        <Plus className="h-4 w-4" />
-                        إضافة المهارة الآن
-                      </button>
+                      {editingSkillId ? (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleUpdateSkill}
+                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-white uppercase tracking-wider select-none cursor-pointer focus:outline-none"
+                            style={{ backgroundColor: personal.accentColor }}
+                          >
+                            <Check className="h-4 w-4" />
+                            تحديث المهارة
+                          </button>
+                          <button
+                            onClick={handleCancelEditSkill}
+                            className="py-3 px-4 rounded-xl font-bold text-xs bg-slate-800 hover:bg-slate-755 text-slate-300 transition-all select-none cursor-pointer focus:outline-none"
+                          >
+                            إلغاء
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={handleAddSkill}
+                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-white uppercase tracking-wider select-none cursor-pointer focus:outline-none"
+                          style={{ backgroundColor: personal.accentColor }}
+                        >
+                          <Plus className="h-4 w-4" />
+                          إضافة המهارة الآن
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -1190,12 +1313,25 @@ export default function AdminPanel({
                                 المستوى: {skill.level}% | التصنيف: {skill.category === "frontend" ? "واجهات" : skill.category === "backend" ? "خوادم" : skill.category === "design" ? "تصميم" : "أخرى"}
                               </p>
                             </div>
-                            <button
-                              onClick={() => handleDeleteSkill(skill.id)}
-                              className="p-2 text-rose-500 hover:text-rose-400 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-lg transition-colors"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex items-center gap-2 select-none">
+                              <button
+                                onClick={() => handleStartEditSkill(skill)}
+                                className={`p-2 rounded-lg transition-colors border ${
+                                  editingSkillId === skill.id
+                                    ? "text-amber-500 border-amber-500/20 bg-amber-500/5"
+                                    : "text-slate-400 hover:text-slate-200 border-slate-800 bg-slate-950"
+                                }`}
+                                title="تعديل المهارة"
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteSkill(skill.id)}
+                                className="p-2 text-rose-500 hover:text-rose-450 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-lg transition-colors"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
                           </div>
                         ))
                       ) : (
@@ -1205,7 +1341,6 @@ export default function AdminPanel({
                       )}
                     </div>
                   </div>
-
                 </div>
               </motion.div>
             )}
@@ -1223,7 +1358,9 @@ export default function AdminPanel({
                   
                   {/* Create project panel */}
                   <div className="lg:col-span-5 bg-slate-900 border border-slate-850 p-6 rounded-3xl space-y-4">
-                    <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-3" style={{ color: personal.accentColor }}>إدراج مشروع جديد</h3>
+                    <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-3" style={{ color: personal.accentColor }}>
+                      {editingProjectId ? "تعديل بيانات المشروع المختار" : "إدراج مشروع جديد"}
+                    </h3>
                     
                     <div className="space-y-3.5">
                       <div className="space-y-3">
@@ -1330,14 +1467,33 @@ export default function AdminPanel({
                         <p className="text-[9px] text-slate-500 mt-0.5">* أدخل أسماء الفريم ورك والمكتبات مفصولة بفاصلة إنجليزية (,)</p>
                       </div>
 
-                      <button
-                        onClick={handleAddProject}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-white uppercase tracking-wider select-none cursor-pointer focus:outline-none"
-                        style={{ backgroundColor: personal.accentColor }}
-                      >
-                        <Plus className="h-4 w-4" />
-                        إدراج المشروع لقائمتي
-                      </button>
+                      {editingProjectId ? (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleUpdateProject}
+                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-white uppercase tracking-wider select-none cursor-pointer focus:outline-none"
+                            style={{ backgroundColor: personal.accentColor }}
+                          >
+                            <Check className="h-4 w-4" />
+                            تحديث المشروع
+                          </button>
+                          <button
+                            onClick={handleCancelEditProject}
+                            className="py-3 px-4 rounded-xl font-bold text-xs bg-slate-800 hover:bg-slate-755 text-slate-300 transition-all select-none cursor-pointer focus:outline-none"
+                          >
+                            إلغاء
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={handleAddProject}
+                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-xs text-white uppercase tracking-wider select-none cursor-pointer focus:outline-none"
+                          style={{ backgroundColor: personal.accentColor }}
+                        >
+                          <Plus className="h-4 w-4" />
+                          إدراج المشروع لقائمتي
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -1375,12 +1531,25 @@ export default function AdminPanel({
                               </div>
                             </div>
                             
-                            <button
-                              onClick={() => handleDeleteProject(proj.id)}
-                              className="p-2 text-rose-500 hover:text-rose-400 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-lg transition-colors flex-shrink-0"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex items-center gap-2 select-none self-end sm:self-center">
+                              <button
+                                onClick={() => handleStartEditProject(proj)}
+                                className={`p-2 rounded-lg transition-colors border ${
+                                  editingProjectId === proj.id
+                                    ? "text-amber-500 border-amber-500/20 bg-amber-500/5"
+                                    : "text-slate-400 hover:text-slate-200 border-slate-800 bg-slate-950"
+                                }`}
+                                title="تعديل المشروع"
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteProject(proj.id)}
+                                className="p-2 text-rose-500 hover:text-rose-450 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-lg transition-colors flex-shrink-0"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
                           </div>
                         ))
                       ) : (
