@@ -7,14 +7,17 @@
 }
 
 :root {
-  /* Site-wide Color Variables (Light Theme) */
-  --bg-app: #f8fafc;
-  --bg-section: #ffffff;
-  --bg-card: #f1f5f9;
-  --bg-card-inner: #ffffff;
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --text-subtitle: #334155;
+  /* --- Site-wide Color Variables (Light Theme) --- */
+  --bg-app: #f8fafc;            /* خلفية التطبيق الفاتحة */
+  --bg-section: #ffffff;        /* خلفية المقاطع */
+  --bg-card: #f1f5f9;           /* خلفية الكروت */
+  --bg-card-inner: #ffffff;     /* خلفية الكروت الداخلية */
+  
+  /* تدرجات اللون الأسود والداكن للنصوص في الوضع الفاتح */
+  --text-main: #0f172a;         /* أسود داكن جداً للعناوين الرئيسية */
+  --text-subtitle: #334155;     /* أسود مائل للرمادي للعناوين الفرعية */
+  --text-muted: #64748b;        /* رمادي متناسق للنصوص العادية والمخففة */
+  
   --border-main: #e2e8f0;
   --border-secondary: #cbd5e1;
   --input-bg: #ffffff;
@@ -27,23 +30,26 @@
 }
 
 html.dark {
-  /* Site-wide Color Variables (Dark Theme) */
-  --bg-app: #030712;
-  --bg-section: #090d16;
-  --bg-card: #0f172a;
-  --bg-card-inner: #030712;
-  --text-main: #f1f5f9;
-  --text-muted: #94a3b8;
-  --text-subtitle: #cbd5e1;
+  /* --- Site-wide Color Variables (Dark Theme) --- */
+  --bg-app: #090d16;            /* خلفية داكنة فخمة وليست سوداء قاتمة */
+  --bg-section: #0f172a;        /* خلفية المقاطع في الوضع الداكن */
+  --bg-card: #1e293b;           /* خلفية الكروت */
+  --bg-card-inner: #0f172a;     /* خلفية الكروت الداخلية */
+  
+  /* تدرجات اللون الأبيض والرمادي الفاتح للنصوص في الوضع الداكن */
+  --text-main: #ffffff;         /* أبيض ناصع للعناوين الرئيسية */
+  --text-subtitle: #f1f5f9;     /* أبيض ناعم جداً للعناوين الفرعية */
+  --text-muted: #94a3b8;        /* رمادي فضي فاتح ومريح للنصوص العادية */
+  
   --border-main: #1e293b;
-  --border-secondary: #111827;
-  --input-bg: #030712;
-  --input-border: #1e293b;
-  --input-text: #cbd5e1;
-  --scroll-track: #030712;
+  --border-secondary: #334155;
+  --input-bg: #090d16;
+  --input-border: #334155;
+  --input-text: #f1f5f9;
+  --scroll-track: #090d16;
   --scroll-thumb: #1e293b;
   --scroll-thumb-hover: #334155;
-  --bg-hero: linear-gradient(180deg, #030712 0%, #0f172a 50%, #030712 100%);
+  --bg-hero: linear-gradient(180deg, #090d16 0%, #0f172a 50%, #090d16 100%);
 }
 
 html {
@@ -52,8 +58,8 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bg-app);
-  color: var(--text-main);
+  background-color: var(--bg-app) !important;
+  color: var(--text-main) !important;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -157,21 +163,21 @@ body {
 #contact input::placeholder,
 #contact textarea::placeholder {
   color: var(--text-muted) !important;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 /* Global Navbar sticky color support */
 nav {
-  transition: bg-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease !important;
 }
 nav.bg-white\/95,
 nav.backdrop-blur-md {
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
   border-color: var(--border-main) !important;
 }
 html.dark nav.bg-white\/95,
 html.dark nav.backdrop-blur-md {
-  background-color: rgba(15, 23, 42, 0.9) !important;
+  background-color: rgba(9, 13, 22, 0.85) !important;
   border-color: var(--border-main) !important;
 }
 
@@ -184,16 +190,10 @@ footer {
 
 /* --- Admin Panel Dynamic Theme Adapter Styles --- */
 
-/* Theme-proof background cards inside admin panel (Light mode card background is beautiful slate-50/100 gray, and dark mode is slate-900) */
 .fixed.z-50 div.bg-slate-900 {
   background-color: var(--bg-card) !important;
   border-color: var(--border-main) !important;
   color: var(--text-main) !important;
-}
-html.dark .fixed.z-50 div.bg-slate-900 {
-  background-color: #0f172a !important;
-  border-color: #1e293b !important;
-  color: #f1f5f9 !important;
 }
 
 /* Theme-proof card headers */
@@ -201,11 +201,6 @@ html.dark .fixed.z-50 div.bg-slate-900 {
 .fixed.z-50 div.bg-slate-900 h3 {
   color: var(--text-main) !important;
   border-color: var(--border-main) !important;
-}
-html.dark .fixed.z-50 h3.text-white,
-html.dark .fixed.z-50 div.bg-slate-900 h3 {
-  color: #ffffff !important;
-  border-color: #1e293b !important;
 }
 
 /* Theme-proof general headings & text labels */
@@ -215,29 +210,15 @@ html.dark .fixed.z-50 div.bg-slate-900 h3 {
 .fixed.z-50 span.text-white {
   color: var(--text-main) !important;
 }
-html.dark .fixed.z-50 h1.text-white, 
-html.dark .fixed.z-50 h2.text-white, 
-html.dark .fixed.z-50 h4.text-white,
-html.dark .fixed.z-50 span.text-white {
-  color: #ffffff !important;
-}
 
-/* Theme-proof input & textarea elements (Light mode is pure white with light gray border, dark mode is slate-950) */
+/* Theme-proof input & textarea elements */
 .fixed.z-50 .bg-slate-950,
 .fixed.z-50 input:not([type="color"]):not([type="checkbox"]):not([type="file"]),
 .fixed.z-50 textarea,
 .fixed.z-50 select {
-  background-color: var(--bg-card-inner) !important;
-  border-color: var(--border-main) !important;
-  color: var(--text-main) !important;
-}
-html.dark .fixed.z-50 .bg-slate-950,
-html.dark .fixed.z-50 input:not([type="color"]):not([type="checkbox"]):not([type="file"]),
-html.dark .fixed.z-50 textarea,
-html.dark .fixed.z-50 select {
-  background-color: #030712 !important;
-  border-color: #1e293b !important;
-  color: #cbd5e1 !important;
+  background-color: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--input-text) !important;
 }
 
 /* Theme-proof nested layouts and dash lines */
@@ -247,26 +228,13 @@ html.dark .fixed.z-50 select {
   background-color: var(--bg-app) !important;
   border-color: var(--border-main) !important;
 }
-html.dark .fixed.z-50 .bg-slate-950\/50,
-html.dark .fixed.z-50 .bg-slate-950\/30,
-html.dark .fixed.z-50 .bg-slate-950\/45 {
-  background-color: rgba(3, 7, 18, 0.5) !important;
-  border-color: #1e293b !important;
-}
 
 /* Theme-proof field label captions and secondary texts */
 .fixed.z-50 .text-slate-400 {
   color: var(--text-muted) !important;
 }
-html.dark .fixed.z-50 .text-slate-400 {
-  color: #94a3b8 !important;
-}
-
 .fixed.z-50 .text-slate-300 {
   color: var(--text-subtitle) !important;
-}
-html.dark .fixed.z-50 .text-slate-300 {
-  color: #cbd5e1 !important;
 }
 
 /* Theme-proof grid/card accent board and lines */
@@ -274,16 +242,8 @@ html.dark .fixed.z-50 .text-slate-300 {
 .fixed.z-50 .border-slate-850 {
   border-color: var(--border-main) !important;
 }
-html.dark .fixed.z-50 .border-slate-800,
-html.dark .fixed.z-50 .border-slate-850 {
-  border-color: #1e293b !important;
-}
-
 .fixed.z-50 .text-slate-200 {
   color: var(--text-main) !important;
-}
-html.dark .fixed.z-50 .text-slate-200 {
-  color: #e2e8f0 !important;
 }
 
 /* Ensure color picker box values don't reverse hashtags in RTL */
@@ -293,113 +253,37 @@ html.dark .fixed.z-50 .text-slate-200 {
   text-align: left !important;
 }
 
-/* --- Unbeatable High-Contrast Text Color Adaptations --- */
+
+/* --- Definitive High-Contrast Text Color Adaptations --- */
 
 /* Global text transitions */
 body, p, span, h1, h2, h3, h4, h5, h6, a, li, label, div {
   transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* 1. DARK MODE DEFINITIVE LIGHT-GRAY/WHITE TEXT COHESION */
-html.dark,
-html.dark body {
-  background-color: #030712 !important;
-  color: #f1f5f9 !important;
+/* تطبيق التدرج اللوني الذكي بناءً على المتغيرات لضمان عدم اختلاط الألوان القسرية */
+
+/* 1. للعناوين الرئيسية والفرعية */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-main) !important;
 }
 
-/* Base text elements in dark mode */
-html.dark p,
-html.dark li,
-html.dark label,
-html.dark span:not([style*="color"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-teal"]):not([class*="text-rose"]):not([class*="text-orange"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-blue"]),
-html.dark a:not([style*="color"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-teal"]):not([class*="text-rose"]):not([class*="text-orange"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-blue"]) {
-  color: #f1f5f9 !important; /* Force readable content text */
+/* 2. للنصوص العادية والفقرات */
+p, li, label {
+  color: var(--text-subtitle) !important;
 }
 
-/* Secondary/muted text elements in dark mode */
-html.dark .text-slate-400,
-html.dark .text-slate-450,
-html.dark .text-slate-500,
-html.dark .text-slate-505,
-html.dark .text-slate-550,
-html.dark .text-slate-600 {
-  color: #cbd5e1 !important; /* Clear light muted silver-gray */
-}
-
-/* Extremely muted utility text in dark mode */
-html.dark .text-slate-650,
-html.dark .text-slate-700,
-html.dark .text-slate-750,
-html.dark .text-slate-755 {
-  color: #94a3b8 !important; /* Clean soft silver-gray */
-}
-
-/* High attention headings & labels in dark mode */
-html.dark h1,
-html.dark h2,
-html.dark h3,
-html.dark h4,
-html.dark h5,
-html.dark h6,
-html.dark .text-slate-800,
-html.dark .text-slate-805,
-html.dark .text-slate-850,
-html.dark .text-slate-900 {
-  color: #ffffff !important; /* Bright high-contrast white */
-}
-
-/* 2. LIGHT MODE DEFINITIVE DARK-GRAY/BLACK TEXT COHESION */
-html:not(.dark),
-html:not(.dark) body {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-}
-
-html:not(.dark) p,
-html:not(.dark) li,
-html:not(.dark) label,
-html:not(.dark) span:not([style*="color"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-teal"]):not([class*="text-rose"]):not([class*="text-orange"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-blue"]),
-html:not(.dark) a:not([style*="color"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-teal"]):not([class*="text-rose"]):not([class*="text-orange"]):not([class*="text-red"]):not([class*="text-green"]):not([class*="text-blue"]) {
-  color: #1e293b !important; /* Highly readable near-black content text */
-}
-
-/* Muted descriptive text branches in light mode */
-html:not(.dark) .text-slate-400,
-html:not(.dark) .text-slate-450,
-html:not(.dark) .text-slate-500,
-html:not(.dark) .text-slate-505 {
-  color: #57687e !important; /* Clean visible muted gray-blue */
-}
-
-/* Darker descriptive text in light mode */
-html:not(.dark) .text-slate-550,
-html:not(.dark) .text-slate-600,
-html:not(.dark) .text-slate-650,
-html:not(.dark) .text-slate-700 {
-  color: #334155 !important; /* Visible charcoal slate */
-}
-
-/* Main title headings & labels in light mode */
-html:not(.dark) h1,
-html:not(.dark) h2,
-html:not(.dark) h3,
-html:not(.dark) h4,
-html:not(.dark) h5,
-html:not(.dark) h6,
-html:not(.dark) .text-slate-750,
-html:not(.dark) .text-slate-755,
-html:not(.dark) .text-slate-800,
-html:not(.dark) .text-slate-805,
-html:not(.dark) .text-slate-850,
-html:not(.dark) .text-slate-900 {
-  color: #0d1527 !important; /* Premium deep black-blue */
-}
-
-/* Active interactive states */
+/* 3. تنظيف وتطبيق ميزات تفاعلية ذكية لحالات الـ Hover */
 html.dark .hover\:text-slate-900:hover {
-  color: #ffffff !important;
+  color: var(--text-main) !important;
 }
 html:not(.dark) .hover\:text-slate-900:hover {
-  color: #0f172a !important;
+  color: var(--text-main) !important;
 }
 
+/* استثناء نصوص الألوان التحذيرية أو النجاح من الطمس */
+span[class*="text-emerald"], span[class*="text-amber"], span[class*="text-teal"], 
+span[class*="text-rose"], span[class*="text-orange"], span[class*="text-red"], 
+span[class*="text-green"], span[class*="text-blue"] {
+  color: inherit; 
+}
