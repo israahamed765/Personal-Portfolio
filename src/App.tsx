@@ -57,6 +57,17 @@ export default function App() {
     fetchLatestPortfolio();
   }, []);
 
+  // 4. Periodically poll for updates across devices (only when admin panel is NOT open to avoid interrupting active changes)
+  useEffect(() => {
+    if (isAdminOpen) return;
+    
+    const interval = setInterval(() => {
+      fetchLatestPortfolio();
+    }, 6000); // Poll once every 6 seconds.
+    
+    return () => clearInterval(interval);
+  }, [isAdminOpen]);
+
   const fetchLatestPortfolio = async () => {
     try {
       const response = await fetch("/api/portfolio");

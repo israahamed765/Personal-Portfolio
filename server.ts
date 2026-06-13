@@ -93,12 +93,42 @@ async function startServer() {
   // 1. Get Portfolio Data
   app.get("/api/portfolio", async (req, res) => {
     try {
+      let localData: any = null;
+      if (fs.existsSync(activePath)) {
+        try {
+          localData = JSON.parse(fs.readFileSync(activePath, "utf8"));
+        } catch (e) {
+          console.error("Error reading local active data:", e);
+        }
+      } else if (fs.existsSync(defaultPath)) {
+        try {
+          localData = JSON.parse(fs.readFileSync(defaultPath, "utf8"));
+        } catch (e) {
+          console.error("Error reading default data:", e);
+        }
+      }
+
       if (db) {
         try {
           const docRef = doc(db, "portfolio", "active");
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            return res.json(docSnap.data());
+            let firestoreData = docSnap.data();
+
+            // Self-healing merge: If we have an avatarUrl locally but empty or missing in Firestore, update Firestore!
+            if (localData && localData.personalInfo && localData.personalInfo.avatarUrl &&
+                (!firestoreData.personalInfo || !firestoreData.personalInfo.avatarUrl)) {
+              if (!firestoreData.personalInfo) {
+                firestoreData.personalInfo = {};
+              }
+              firestoreData.personalInfo.avatarUrl = localData.personalInfo.avatarUrl;
+              
+              // Push merged state back to Firestore
+              await setDoc(docRef, firestoreData);
+              console.log("[Firebase] Successfully merged and uploaded local avatar copy to Firestore active document.");
+            }
+
+            return res.json(firestoreData);
           }
         } catch (dbErr) {
           handleFirestoreError(dbErr, OperationType.GET, "portfolio/active");
@@ -106,31 +136,18 @@ async function startServer() {
         }
       }
 
-      if (fs.existsSync(activePath)) {
-        const data = fs.readFileSync(activePath, "utf8");
-        const parsed = JSON.parse(data);
+      if (localData) {
         if (db) {
           try {
-            await setDoc(doc(db, "portfolio", "active"), parsed);
-            console.log("[Firebase] Cache bootstrapped into Firestore.");
+            await setDoc(doc(db, "portfolio", "active"), localData);
+            console.log("[Firebase] Cache bootstrapped into Firestore from local backup.");
           } catch (e) {
             handleFirestoreError(e, OperationType.WRITE, "portfolio/active");
           }
         }
-        return res.json(parsed);
-      } else if (fs.existsSync(defaultPath)) {
-        const data = fs.readFileSync(defaultPath, "utf8");
-        const parsed = JSON.parse(data);
-        if (db) {
-          try {
-            await setDoc(doc(db, "portfolio", "active"), parsed);
-          } catch (e) {
-            handleFirestoreError(e, OperationType.WRITE, "portfolio/active");
-          }
-        }
-        return res.json(parsed);
+        return res.json(localData);
       } else {
-        return res.status(404).json({ error: "Default portfolio data not found" });
+        return res.status(404).json({ error: "Portfolio data not found" });
       }
     } catch (error) {
       console.error("Error loading portfolio data:", error);
