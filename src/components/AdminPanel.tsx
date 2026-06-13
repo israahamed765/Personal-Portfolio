@@ -123,7 +123,7 @@ export default function AdminPanel({
     }
   };
 
-  // Safe file reader to convert any images of user selection into Base64 format
+  // Safe file reader and optimizer to convert/compress user uploaded images and assets
   const handleImageFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     onComplete: (base64: string) => void
@@ -131,18 +131,62 @@ export default function AdminPanel({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 8 * 1024 * 1024) {
-      alert("حجم الصورة كبير جداً! يرجى اختيار صورة أصغر من 8 ميجابايت.");
-      return;
-    }
+    // Check if the uploaded file is an image
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          // Initialize HTML5 canvas for resizing and compression
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (typeof reader.result === "string") {
-        onComplete(reader.result);
+          // Target maximum width or height of 1000 pixels for optimal portfolio fidelity/size ratio
+          const MAX_DIMENSION = 1000;
+          if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+            if (width > height) {
+              height = Math.round((height * MAX_DIMENSION) / width);
+              width = MAX_DIMENSION;
+            } else {
+              width = Math.round((width * MAX_DIMENSION) / height);
+              height = MAX_DIMENSION;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            // Export as JPEG with 0.75 quality to dramatically minimize storage and payload footprint
+            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.75);
+            onComplete(compressedBase64);
+          } else {
+            // Fallback if canvas context creation fails
+            if (event.target?.result && typeof event.target.result === "string") {
+              onComplete(event.target.result);
+            }
+          }
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Fallback for non-image files (like PDF CV uploads)
+      if (file.size > 8 * 1024 * 1024) {
+        alert("حجم الملف كبير جداً! يرجى اختيار ملف أصغر من 8 ميجابايت.");
+        return;
       }
-    };
-    reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          onComplete(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Apply Changes to Parent Store & Backend
