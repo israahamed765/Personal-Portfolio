@@ -52,18 +52,32 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
   return errInfo;
 }
 
-// Read Firebase config safely at runtime
+// Read Firebase config safely at runtime (supports both file and environment fallbacks)
 const configPath = path.join(process.cwd(), "firebase-applet-config.json");
 let db: any = null;
 
 try {
+  let firebaseConfig: any = null;
   if (fs.existsSync(configPath)) {
-    const firebaseConfig = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    firebaseConfig = JSON.parse(fs.readFileSync(configPath, "utf8"));
+  } else if (process.env.FIREBASE_PROJECT_ID) {
+    firebaseConfig = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      appId: process.env.FIREBASE_APP_ID,
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      firestoreDatabaseId: process.env.FIREBASE_FIRESTORE_DATABASE_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
+    };
+  }
+
+  if (firebaseConfig) {
     const firebaseApp = initializeApp(firebaseConfig);
     db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
     console.log("[Firebase] Firestore client initialized successfully!");
   } else {
-    console.warn("[Firebase] Config missing. Running in local file-system fallback mode.");
+    console.warn("[Firebase] Firebase config missing (both file and Env vars). Running in local file-system fallback mode.");
   }
 } catch (err) {
   console.error("[Firebase] Initialization error:", err);
@@ -71,7 +85,7 @@ try {
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
   // Payload body parsers (large size for Base64 image transfers)
   app.use(express.json({ limit: "50mb" }));
