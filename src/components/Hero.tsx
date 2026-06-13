@@ -6,10 +6,9 @@ interface HeroProps {
   personalInfo: PersonalInfo;
   accentColor: string;
   lang: "ar" | "en";
-  theme: "dark" | "light";
 }
 
-export default function Hero({ personalInfo, accentColor, lang, theme }: HeroProps) {
+export default function Hero({ personalInfo, accentColor, lang }: HeroProps) {
   const bgAccent = personalInfo.avatarBgColor || "#fed7aa";
 
   const t = {
@@ -51,7 +50,7 @@ export default function Hero({ personalInfo, accentColor, lang, theme }: HeroPro
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white leading-tight">
               {t.welcome} <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r" style={{ backgroundImage: `linear-gradient(to left, ${theme === 'dark' ? '#ffffff' : '#0f172a'}, ${accentColor})` }}>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r" style={{ backgroundImage: `linear-gradient(to left, #0f172a, ${accentColor})` }}>
                 {t.name}
               </span>
             </h1>

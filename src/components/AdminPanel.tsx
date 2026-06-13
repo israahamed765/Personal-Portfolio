@@ -30,8 +30,6 @@ interface AdminPanelProps {
   onLogout: () => void;
   isAdminLoggedIn: boolean;
   setIsAdminLoggedIn: (val: boolean) => void;
-  theme: "dark" | "light";
-  setTheme: (val: "dark" | "light") => void;
 }
 
 export default function AdminPanel({
@@ -40,9 +38,7 @@ export default function AdminPanel({
   onClose,
   onLogout,
   isAdminLoggedIn,
-  setIsAdminLoggedIn,
-  theme,
-  setTheme
+  setIsAdminLoggedIn
 }: AdminPanelProps) {
   // Password Authentication State
   const [password, setPassword] = useState("");
@@ -480,32 +476,32 @@ export default function AdminPanel({
   // Lock Screen View
   if (!isAdminLoggedIn) {
     return (
-      <div dir="rtl" className="fixed inset-0 z-50 overflow-y-auto bg-slate-950 flex items-center justify-center p-4">
+      <div dir="rtl" className="fixed inset-0 z-[130] overflow-y-auto bg-slate-50 flex items-center justify-center p-4">
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-orange-500/10 to-transparent pointer-events-none" />
         
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 sm:p-8 flex flex-col space-y-6 shadow-2xl text-right"
+          className="relative bg-white border border-slate-200 rounded-3xl w-full max-w-md p-6 sm:p-8 flex flex-col space-y-6 shadow-xl text-right"
         >
           <button 
             onClick={onClose}
-            className="absolute top-4 left-4 p-2 text-slate-500 hover:text-white rounded-xl transition-colors hover:bg-slate-800/50"
+            className="absolute top-4 left-4 p-2 text-slate-500 hover:text-slate-900 rounded-xl transition-colors hover:bg-slate-100"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-
+ 
           <div className="flex flex-col items-center text-center space-y-2 mt-4">
             <div className="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 shadow-inner">
               <Lock className="h-8 w-8" />
             </div>
-            <h2 className="text-xl font-extrabold text-white">منصة الإدارة المحمية</h2>
-            <p className="text-xs text-slate-400">يرجى كتابة كلمة المرور الخاصة بك لتنشيط لوحة التعديل.</p>
+            <h2 className="text-xl font-extrabold text-slate-900">منصة الإدارة المحمية</h2>
+            <p className="text-xs text-slate-500">يرجى كتابة كلمة المرور الخاصة بك لتنشيط لوحة التعديل.</p>
           </div>
-
+ 
           <form onSubmit={handleAuthSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 flex items-center justify-between pb-1">
+              <label className="text-xs font-bold text-slate-600 flex items-center justify-between pb-1">
                 <span>كلمة المرور الإشرافية</span>
               </label>
               <div className="relative">
@@ -514,30 +510,30 @@ export default function AdminPanel({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-12 pr-4 py-3.5 text-center font-mono placeholder-slate-800 text-slate-200 focus:outline-none focus:border-slate-700 transition-all text-sm tracking-widest"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-4 py-3.5 text-center font-mono placeholder-slate-400 text-slate-800 focus:outline-none focus:border-slate-400 transition-all text-sm tracking-widest"
                   required
                   autoFocus
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-1.5 text-slate-500 hover:text-white transition-colors"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-1.5 text-slate-500 hover:text-slate-800 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
-
+ 
             {authError && (
-              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-start gap-2.5">
+              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs flex items-start gap-2.5">
                 <ShieldAlert className="h-4.5 w-4.5 flex-shrink-0 mt-0.5" />
                 <span>{authError}</span>
               </div>
             )}
-
+ 
             <button
               type="submit"
-              className="w-full py-4 rounded-2xl font-bold bg-orange-500 hover:bg-orange-600 font-sans text-sm text-slate-950 shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer focus:outline-none"
+              className="w-full py-4 rounded-2xl font-bold bg-orange-500 hover:bg-orange-600 font-sans text-sm text-white shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer focus:outline-none"
             >
               <Key className="h-4 w-4" />
               فك قفل الإدارة
@@ -550,7 +546,7 @@ export default function AdminPanel({
 
   // Authenticated Admin Dashboard Layout
   return (
-    <div dir="rtl" className="fixed inset-0 z-50 bg-slate-50 dark:bg-slate-950 flex flex-col sm:flex-row text-right transition-colors duration-300">
+    <div dir="rtl" className="fixed inset-0 z-[130] bg-slate-50 flex flex-col sm:flex-row text-right transition-colors duration-300">
       
       {/* Dynamic Floating Save Toast Notification */}
       <AnimatePresence>
@@ -561,27 +557,27 @@ export default function AdminPanel({
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
             className={`fixed top-4 left-1/2 -translate-x-1/2 z-[150] px-6 py-3 rounded-2xl shadow-xl flex items-center gap-3 font-sans text-sm font-bold border ${
               saveStatus === "saving"
-                ? "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400"
+                ? "bg-amber-500/10 border-amber-500/20 text-amber-600"
                 : saveStatus === "success"
-                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
-                : "bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400"
+                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600"
+                : "bg-rose-500/10 border-rose-500/20 text-rose-650"
             }`}
           >
             {saveStatus === "saving" && (
               <>
-                <span className="w-4 h-4 border-2 border-amber-600 dark:border-amber-400 border-t-transparent rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
                 <span>جاري المزامنة وحفظ التعديلات بأمان...</span>
               </>
             )}
             {saveStatus === "success" && (
               <>
-                <Check className="h-5 w-5 stroke-[3] text-emerald-600 dark:text-emerald-400" />
+                <Check className="h-5 w-5 stroke-[3] text-emerald-600" />
                 <span>تم الحفظ والتحديث بنجاح! 🎉</span>
               </>
             )}
             {saveStatus === "error" && (
               <>
-                <ShieldAlert className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                <ShieldAlert className="h-5 w-5 text-rose-600" />
                 <span>حدث خطأ أثناء الحفظ! يرجى إعادة المحاولة.</span>
               </>
             )}
@@ -590,19 +586,19 @@ export default function AdminPanel({
       </AnimatePresence>
 
       {/* Mobile Top Navigation Bar (Visible only on Mobile) */}
-      <div className="flex sm:hidden items-center justify-between px-4 py-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20 shadow-sm transition-colors duration-300 w-full">
+      <div className="flex sm:hidden items-center justify-between px-4 py-3 bg-white border-b border-slate-200 z-20 shadow-sm transition-colors duration-300 w-full">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMobileNavOpen(true)}
-            className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer pointer-events-auto"
+            className="p-2 text-slate-600 hover:bg-slate-100 rounded-xl transition-all cursor-pointer pointer-events-auto"
           >
             <Menu className="h-6 w-6 pointer-events-none" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20">
               <Check className="h-4 w-4" />
             </div>
-            <h3 className="text-xs font-black text-slate-800 dark:text-white">لوحة الإدارة</h3>
+            <h3 className="text-xs font-black text-slate-800">لوحة الإدارة</h3>
           </div>
         </div>
         
@@ -640,23 +636,23 @@ export default function AdminPanel({
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 p-5 flex flex-col justify-between shadow-2xl sm:hidden text-right animate-none"
+              className="fixed inset-y-0 right-0 w-72 bg-white border-r border-slate-200 z-50 p-5 flex flex-col justify-between shadow-2xl sm:hidden text-right animate-none"
             >
               <div className="space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-200">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20">
                       <Check className="h-4 w-4" />
                     </div>
                     <div className="text-right">
-                      <h3 className="text-sm font-black text-slate-850 dark:text-white">إدارة المهندس</h3>
+                      <h3 className="text-sm font-black text-slate-850">إدارة المهندس</h3>
                       <p className="text-[9px] text-slate-500 font-mono">ISRAA059 ACTIVE</p>
                     </div>
                   </div>
                   
                   <button
                     onClick={() => setIsMobileNavOpen(false)}
-                    className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer pointer-events-auto"
+                    className="p-2 text-slate-400 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer pointer-events-auto"
                   >
                     <X className="h-5 w-5 pointer-events-none" />
                   </button>
@@ -682,8 +678,8 @@ export default function AdminPanel({
                         }}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all focus:outline-none ${
                           active 
-                            ? "bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white border-r-3"
-                            : "text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-850"
+                            ? "bg-slate-100 text-slate-950 border-r-3"
+                            : "text-slate-500 hover:text-slate-950 hover:bg-slate-50"
                         }`}
                         style={{ borderRightColor: active ? personal.accentColor : "transparent" }}
                       >
@@ -701,7 +697,7 @@ export default function AdminPanel({
               </div>
 
               {/* Mobile Drawer Footer */}
-              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+              <div className="pt-4 border-t border-slate-200 space-y-3">
                 <button
                   onClick={() => {
                     handleSaveAll();
@@ -721,7 +717,7 @@ export default function AdminPanel({
                       setIsMobileNavOpen(false);
                       onClose();
                     }}
-                    className="flex items-center justify-center gap-1 py-2.5 px-2 text-xs font-bold border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    className="flex items-center justify-center gap-1 py-2.5 px-2 text-xs font-bold border border-slate-200 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
                   >
                     عرض الموقع
                   </button>
@@ -730,7 +726,7 @@ export default function AdminPanel({
                       onLogout();
                       onClose();
                     }}
-                    className="flex items-center justify-center gap-1 py-2.5 px-2 text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-450 border border-rose-500/20 rounded-lg transition-all"
+                    className="flex items-center justify-center gap-1 py-2.5 px-2 text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-650 border border-rose-500/20 rounded-lg transition-all"
                   >
                     <LogOut className="h-3.5 w-3.5" />
                     خروج
@@ -743,17 +739,17 @@ export default function AdminPanel({
       </AnimatePresence>
       
       {/* Desktop Sidebar Navigation (Visible on wider screens) */}
-      <div className="hidden sm:flex sm:w-64 bg-white dark:bg-slate-900 flex-col justify-between p-4 flex-shrink-0 z-10 shadow-xl transition-colors duration-300">
+      <div className="hidden sm:flex sm:w-64 bg-white flex-col justify-between p-4 flex-shrink-0 z-10 shadow-xl transition-colors duration-300">
         <div className="space-y-6">
           
           {/* Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-200">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20">
                 <Check className="h-4.5 w-4.5" />
               </div>
               <div className="text-right">
-                <h3 className="text-sm font-black text-slate-800 dark:text-white font-sans">إدارة المهندس</h3>
+                <h3 className="text-sm font-black text-slate-800 font-sans">إدارة المهندس</h3>
                 <p className="text-[9px] text-slate-500 font-mono">ISRAA059 ACTIVE</p>
               </div>
             </div>
@@ -776,8 +772,8 @@ export default function AdminPanel({
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all flex-shrink-0 focus:outline-none ${
                     active 
-                      ? "bg-slate-100 dark:bg-slate-800 border-r-3 text-slate-950 dark:text-white shadow-sm" 
-                      : "text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-850"
+                      ? "bg-slate-100 border-r-3 text-slate-950 shadow-sm" 
+                      : "text-slate-500 hover:text-slate-950 hover:bg-slate-50"
                   }`}
                   style={{ borderRightColor: active ? personal.accentColor : "transparent" }}
                 >
@@ -796,7 +792,7 @@ export default function AdminPanel({
         </div>
 
         {/* Footer Actions */}
-        <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
+        <div className="pt-4 border-t border-slate-200 flex flex-col gap-2">
           <button
             onClick={() => {
               handleSaveAll();
@@ -812,7 +808,7 @@ export default function AdminPanel({
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={onClose}
-              className="flex items-center justify-center gap-1 py-2.5 px-2 text-xs font-bold border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white text-slate-600 dark:text-slate-300 rounded-lg transition-colors"
+              className="flex items-center justify-center gap-1 py-2.5 px-2 text-xs font-bold border border-slate-200 hover:bg-slate-100 hover:text-slate-900 text-slate-600 rounded-lg transition-colors"
             >
               عرض الموقع
             </button>
@@ -821,7 +817,7 @@ export default function AdminPanel({
                 onLogout();
                 onClose();
               }}
-              className="flex items-center justify-center gap-1 py-2.5 px-2 text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/20 rounded-lg transition-all"
+              className="flex items-center justify-center gap-1 py-2.5 px-2 text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-650 border border-rose-500/20 rounded-lg transition-all"
             >
               <LogOut className="h-3.5 w-3.5" />
               خروج
@@ -832,24 +828,24 @@ export default function AdminPanel({
       </div>
 
       {/* Main Workspace Frame */}
-      <div className="flex-1 bg-slate-50 dark:bg-slate-950 overflow-y-auto p-4 sm:p-8 flex flex-col transition-colors duration-300">
+      <div className="flex-1 bg-slate-50 overflow-y-auto p-4 sm:p-8 flex flex-col transition-colors duration-300">
         
         {/* Status indicator bar in top-workspace */}
-        <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 mb-6">
+        <div className="flex items-center justify-between pb-6 border-b border-slate-200 mb-6">
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">لوحة تحكم إشرافية</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">تعديل كامل نصوص وقوالب معرض الأعمال، وبطاقات المهارات والمشاريع.</p>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 font-sans">لوحة تحكم إشرافية</h1>
+            <p className="text-xs text-slate-500 mt-1">تعديل كامل نصوص وقوالب معرض الأعمال، وبطاقات المهارات والمشاريع.</p>
           </div>
 
           <div className="flex items-center gap-2.5">
             {saveStatus === "success" && (
-              <span className="text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3.5 py-2 rounded-xl flex items-center gap-1.5 font-bold animate-fade-in">
+              <span className="text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-3.5 py-2 rounded-xl flex items-center gap-1.5 font-bold animate-fade-in">
                 <Check className="h-4 w-4" />
                 تم حفظ التعديلات بنجاح!
               </span>
             )}
             {saveStatus === "error" && (
-              <span className="text-xs bg-rose-500/10 border border-rose-500/20 text-rose-400 px-3.5 py-2 rounded-xl flex items-center gap-1.5 font-bold animate-fade-in">
+              <span className="text-xs bg-rose-500/10 border border-rose-500/20 text-rose-600 px-3.5 py-2 rounded-xl flex items-center gap-1.5 font-bold animate-fade-in">
                 <ShieldAlert className="h-4 w-4" />
                 خطأ أثناء الحفظ!
               </span>

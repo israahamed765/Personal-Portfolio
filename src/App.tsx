@@ -18,7 +18,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   const [lang, setLang] = useState<"ar" | "en">(encodeURI(localStorage.getItem("portfolio_lang") || "ar") as "ar" | "en");
-  const [theme, setTheme] = useState<"dark" | "light">("light");
 
   // Sync language attribute to document roots
   useEffect(() => {
@@ -30,7 +29,6 @@ export default function App() {
 
   // Sync light mode to document roots
   useEffect(() => {
-    localStorage.setItem("portfolio_theme", "light");
     const root = window.document.documentElement;
     root.classList.remove("dark");
   }, []);
@@ -128,15 +126,15 @@ export default function App() {
   const accentColor = personalInfo.accentColor || "#f97316";
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden text-right select-none select-text selection:bg-orange-500/30 selection:text-orange-200 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-150 transition-colors duration-300">
+    <div className="relative min-h-screen overflow-x-hidden text-right select-none select-text selection:bg-orange-500/30 selection:text-orange-200 bg-white text-slate-800 transition-colors duration-300">
       
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b08_1px,transparent_1px),linear-gradient(to_bottom,#1e293b08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none -z-20" />
 
       <Suspense fallback={
-        <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950">
-          <span className="w-10 h-10 border-4 border-slate-200 dark:border-slate-800 border-t-orange-500 rounded-full animate-spin mb-4" />
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-sans font-semibold">تجهيز المعرض الرقمي...</p>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+          <span className="w-10 h-10 border-4 border-slate-200 border-t-orange-500 rounded-full animate-spin mb-4" />
+          <p className="text-xs text-slate-500 font-sans font-semibold">تجهيز المعرض الرقمي...</p>
         </div>
       }>
         {/* Navigation Header */}
@@ -147,13 +145,11 @@ export default function App() {
           accentColor={accentColor}
           lang={lang}
           setLang={setLang}
-          theme={theme}
-          setTheme={setTheme}
           avatarUrl={personalInfo.avatarUrl}
         />
 
         {/* Hero Overview */}
-        <Hero personalInfo={personalInfo} accentColor={accentColor} lang={lang} theme={theme} />
+        <Hero personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
 
         {/* About Profile Summary */}
         <About personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
@@ -168,7 +164,7 @@ export default function App() {
         <Contact personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
 
         {/* Footer Copyright */}
-        <footer className="py-8 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-900 text-center text-xs text-slate-505 dark:text-slate-500 font-mono transition-colors duration-300 font-semibold">
+        <footer className="py-8 bg-slate-100 border-t border-slate-200 text-center text-xs text-slate-505 font-mono transition-colors duration-300 font-semibold">
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p dir={lang === "ar" ? "rtl" : "ltr"} className="font-sans">
               {lang === "ar" 
@@ -176,9 +172,9 @@ export default function App() {
                 : `Developed with absolute passion by Israa Hamad © ${new Date().getFullYear()}`}
             </p>
             <div className="flex gap-4">
-              <a href="#hero" className="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">{lang === "ar" ? "الرئيسية" : "Home"}</a>
-              <a href="#about" className="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">{lang === "ar" ? "عني" : "About"}</a>
-              <a href="#projects" className="hover:text-slate-900 dark:hover:text-slate-300 transition-colors">{lang === "ar" ? "المشاريع" : "Projects"}</a>
+              <a href="#hero" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "الرئيسية" : "Home"}</a>
+              <a href="#about" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "عني" : "About"}</a>
+              <a href="#projects" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "المشاريع" : "Projects"}</a>
             </div>
           </div>
         </footer>
@@ -192,8 +188,6 @@ export default function App() {
             onLogout={handleLogout}
             isAdminLoggedIn={isAdminLoggedIn}
             setIsAdminLoggedIn={setIsAdminLoggedIn}
-            theme={theme}
-            setTheme={setTheme}
           />
         )}
       </Suspense>

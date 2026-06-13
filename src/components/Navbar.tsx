@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ShieldCheck, Menu, X, Code2, Sun, Moon, Languages } from "lucide-react";
+import { ShieldCheck, Menu, X, Code2, Languages } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 interface NavbarProps {
@@ -9,8 +9,6 @@ interface NavbarProps {
   accentColor: string;
   lang: "ar" | "en";
   setLang: (lang: "ar" | "en") => void;
-  theme: "dark" | "light";
-  setTheme: (theme: "dark" | "light") => void;
   avatarUrl?: string;
 }
 
@@ -21,8 +19,6 @@ export default function Navbar({
   accentColor,
   lang,
   setLang,
-  theme,
-  setTheme,
   avatarUrl
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,11 +60,6 @@ export default function Navbar({
   const handleLangToggle = () => {
     const nextLang = lang === "ar" ? "en" : "ar";
     setLang(nextLang);
-  };
-
-  const handleThemeToggle = () => {
-    const nextTheme = theme === "dark" ? "light" : "dark";
-    setTheme(nextTheme);
   };
 
   return (
@@ -185,14 +176,14 @@ export default function Navbar({
       {/* Advanced Mobile Sidebar Drawer Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[100] md:hidden flex overflow-hidden lg:hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
+          <div className="fixed inset-0 z-[110] md:hidden flex overflow-hidden lg:hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
             {/* Backdrop Blur Layer */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="absolute inset-0 bg-slate-950/60 backdrop-blur-md cursor-pointer pointer-events-auto"
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-md cursor-pointer pointer-events-auto z-10"
             />
 
             {/* Sliding Drawer Cover Panel */}
@@ -201,7 +192,7 @@ export default function Navbar({
               animate={{ x: 0 }}
               exit={{ x: lang === "ar" ? "100%" : "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className={`fixed inset-y-0 w-[290px] max-w-[85vw] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xl p-6 flex flex-col justify-between z-50 pointer-events-auto ${
+              className={`absolute inset-y-0 w-[290px] max-w-[85vw] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-2xl p-6 flex flex-col justify-between z-20 pointer-events-auto ${
                 lang === "ar" ? "right-0 border-l" : "left-0 border-r"
               }`}
             >
@@ -219,7 +210,7 @@ export default function Navbar({
                       />
                     ) : (
                       <div 
-                        className="p-2 rounded-lg text-white flex items-center justify-center font-sans animate-none"
+                        className="p-2 rounded-lg text-white flex items-center justify-center font-sans"
                         style={{ backgroundColor: accentColor || "#f97316" }}
                       >
                         <Code2 className="h-5 w-5" />
@@ -231,7 +222,7 @@ export default function Navbar({
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800/50 cursor-pointer pointer-events-auto z-50Close"
+                    className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800/50 cursor-pointer pointer-events-auto z-30"
                   >
                     <X className="h-5 w-5 pointer-events-none" />
                   </button>
