@@ -594,9 +594,9 @@ export default function AdminPanel({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMobileNavOpen(true)}
-            className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
+            className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer pointer-events-auto"
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="h-6 w-6 pointer-events-none" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20">
@@ -656,9 +656,9 @@ export default function AdminPanel({
                   
                   <button
                     onClick={() => setIsMobileNavOpen(false)}
-                    className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer pointer-events-auto"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-5 w-5 pointer-events-none" />
                   </button>
                 </div>
 
