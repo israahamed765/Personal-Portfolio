@@ -1,15 +1,15 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 import defaultPortfolio from "./data/portfolio-default.json";
 import { PortfolioData } from "./types";
 
-// Dynamic component lazy loading for pristine performance
-const Navbar = lazy(() => import("./components/Navbar"));
-const Hero = lazy(() => import("./components/Hero"));
-const About = lazy(() => import("./components/About"));
-const Skills = lazy(() => import("./components/Skills"));
-const Projects = lazy(() => import("./components/Projects"));
-const Contact = lazy(() => import("./components/Contact"));
-const AdminPanel = lazy(() => import("./components/AdminPanel"));
+// Static eager imports for rock-solid production compatibility and zero chunk load latency
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import About from "./components/About";
+import Skills from "./components/Skills";
+import Projects from "./components/Projects";
+import Contact from "./components/Contact";
+import AdminPanel from "./components/AdminPanel";
 
 export default function App() {
   const [portfolioData, setPortfolioData] = useState<PortfolioData>(defaultPortfolio as PortfolioData);
@@ -131,66 +131,59 @@ export default function App() {
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b08_1px,transparent_1px),linear-gradient(to_bottom,#1e293b08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none -z-20" />
 
-      <Suspense fallback={
-        <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
-          <span className="w-10 h-10 border-4 border-slate-200 border-t-orange-500 rounded-full animate-spin mb-4" />
-          <p className="text-xs text-slate-500 font-sans font-semibold">تجهيز المعرض الرقمي...</p>
-        </div>
-      }>
-        {/* Navigation Header */}
-        <Navbar
-          onAdminClick={() => setIsAdminOpen(true)}
-          isAdminLoggedIn={isAdminLoggedIn}
-          onLogout={handleLogout}
-          accentColor={accentColor}
-          lang={lang}
-          setLang={setLang}
-          avatarUrl={personalInfo.avatarUrl}
-        />
+      {/* Navigation Header */}
+      <Navbar
+        onAdminClick={() => setIsAdminOpen(true)}
+        isAdminLoggedIn={isAdminLoggedIn}
+        onLogout={handleLogout}
+        accentColor={accentColor}
+        lang={lang}
+        setLang={setLang}
+        avatarUrl={personalInfo.avatarUrl}
+      />
 
-        {/* Hero Overview */}
-        <Hero personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
+      {/* Hero Overview */}
+      <Hero personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
 
-        {/* About Profile Summary */}
-        <About personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
+      {/* About Profile Summary */}
+      <About personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
 
-        {/* Skills Proficiency Grid */}
-        <Skills skills={skills} accentColor={accentColor} lang={lang} />
+      {/* Skills Proficiency Grid */}
+      <Skills skills={skills} accentColor={accentColor} lang={lang} />
 
-        {/* Projects Grid Showcase */}
-        <Projects projects={projects} accentColor={accentColor} lang={lang} />
+      {/* Projects Grid Showcase */}
+      <Projects projects={projects} accentColor={accentColor} lang={lang} />
 
-        {/* Contact Guest Form */}
-        <Contact personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
+      {/* Contact Guest Form */}
+      <Contact personalInfo={personalInfo} accentColor={accentColor} lang={lang} />
 
-        {/* Footer Copyright */}
-        <footer className="py-8 bg-slate-100 border-t border-slate-200 text-center text-xs text-slate-505 font-mono transition-colors duration-300 font-semibold">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p dir={lang === "ar" ? "rtl" : "ltr"} className="font-sans">
-              {lang === "ar" 
-                ? `طُوِّر بكل شغف بواسطة إسراء حمد © ${new Date().getFullYear()}` 
-                : `Developed with absolute passion by Israa Hamad © ${new Date().getFullYear()}`}
-            </p>
-            <div className="flex gap-4">
-              <a href="#hero" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "الرئيسية" : "Home"}</a>
-              <a href="#about" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "عني" : "About"}</a>
-              <a href="#projects" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "المشاريع" : "Projects"}</a>
-            </div>
+      {/* Footer Copyright */}
+      <footer className="py-8 bg-slate-100 border-t border-slate-200 text-center text-xs text-slate-505 font-mono transition-colors duration-300 font-semibold">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p dir={lang === "ar" ? "rtl" : "ltr"} className="font-sans">
+            {lang === "ar" 
+              ? `طُوِّر بكل شغف بواسطة إسراء حمد © ${new Date().getFullYear()}` 
+              : `Developed with absolute passion by Israa Hamad © ${new Date().getFullYear()}`}
+          </p>
+          <div className="flex gap-4">
+            <a href="#hero" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "الرئيسية" : "Home"}</a>
+            <a href="#about" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "عني" : "About"}</a>
+            <a href="#projects" className="hover:text-slate-900 transition-colors">{lang === "ar" ? "المشاريع" : "Projects"}</a>
           </div>
-        </footer>
+        </div>
+      </footer>
 
-        {/* Password-Protected Administration Sidebar Modal */}
-        {isAdminOpen && (
-          <AdminPanel
-            portfolioData={portfolioData}
-            onSave={handleSavePortfolio}
-            onClose={() => setIsAdminOpen(false)}
-            onLogout={handleLogout}
-            isAdminLoggedIn={isAdminLoggedIn}
-            setIsAdminLoggedIn={setIsAdminLoggedIn}
-          />
-        )}
-      </Suspense>
+      {/* Password-Protected Administration Sidebar Modal */}
+      {isAdminOpen && (
+        <AdminPanel
+          portfolioData={portfolioData}
+          onSave={handleSavePortfolio}
+          onClose={() => setIsAdminOpen(false)}
+          onLogout={handleLogout}
+          isAdminLoggedIn={isAdminLoggedIn}
+          setIsAdminLoggedIn={setIsAdminLoggedIn}
+        />
+      )}
 
     </div>
   );
