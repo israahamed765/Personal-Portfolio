@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
-import { deleteDocument, getDocument, listDocuments, setDocument } from "./lib/firestore";
+import { deleteDocument, getDocument, listDocuments, setDocument } from "./lib/firestore.js";
 
 function handleFirestoreError(error: unknown, operationType: string, path: string | null) {
   const errMsg = error instanceof Error ? error.message : String(error);

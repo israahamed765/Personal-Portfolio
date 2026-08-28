@@ -68,12 +68,14 @@ export default function App() {
 
   const fetchLatestPortfolio = async () => {
     try {
-      const response = await fetch("/api/portfolio", { cache: "no-store" });
-      if (response.ok) {
+      const response = await fetch("/api/portfolio", { cache: "no-store", credentials: "same-origin" });
+      const contentType = response.headers.get("content-type") || "";
+      if (response.ok && contentType.includes("application/json")) {
         const latestData = await response.json();
-        setPortfolioData(latestData);
-        // Refresh local storage cache
-        localStorage.setItem("portfolio_local_data", JSON.stringify(latestData));
+        if (latestData && latestData.personalInfo) {
+          setPortfolioData(latestData);
+          localStorage.setItem("portfolio_local_data", JSON.stringify(latestData));
+        }
       }
     } catch (error) {
       console.warn("[Client] Live server offline/rebooting; using local storage/default cache.", error);

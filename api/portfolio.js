@@ -1,20 +1,8 @@
-import { getDocument, setDocument } from "../lib/firestore";
+import { getDocument, setDocument } from "../lib/firestore.js";
 
-type Req = {
-  method?: string;
-  body?: unknown;
-};
-
-type Res = {
-  status: (code: number) => Res;
-  json: (data: unknown) => void;
-  setHeader: (name: string, value: string) => void;
-};
-
-export const config = { maxDuration: 30 };
-
-export default async function handler(req: Req, res: Res) {
+export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
 
   try {
     if (req.method === "GET") {
@@ -30,7 +18,7 @@ export default async function handler(req: Req, res: Res) {
       if (!data || typeof data !== "object") {
         return res.status(400).json({ error: "Invalid portfolio payload" });
       }
-      await setDocument("portfolio/active", data as Record<string, unknown>);
+      await setDocument("portfolio/active", data);
       return res.status(200).json({ success: true, message: "Portfolio updated successfully" });
     }
 

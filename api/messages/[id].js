@@ -1,20 +1,8 @@
-import { deleteDocument } from "../../lib/firestore";
+import { deleteDocument } from "../../lib/firestore.js";
 
-type Req = {
-  method?: string;
-  query: { id?: string | string[] };
-};
-
-type Res = {
-  status: (code: number) => Res;
-  json: (data: unknown) => void;
-  setHeader: (name: string, value: string) => void;
-};
-
-export const config = { maxDuration: 30 };
-
-export default async function handler(req: Req, res: Res) {
+export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
 
   try {
     if (req.method !== "DELETE") {
