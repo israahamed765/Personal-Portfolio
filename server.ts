@@ -2,85 +2,15 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
-import { initializeApp } from "firebase/app";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
+import { deleteDocument, getDocument, listDocuments, setDocument } from "./lib/firestore";
 
-// --- Conforming Error Handling definitions for platform diagnostics ---
-enum OperationType {
-  CREATE = "create",
-  UPDATE = "update",
-  DELETE = "delete",
-  LIST = "list",
-  GET = "get",
-  WRITE = "write",
-}
-
-interface FirestoreErrorInfo {
-  error: string;
-  operationType: OperationType;
-  path: string | null;
-  authInfo: {
-    userId?: string | null;
-    email?: string | null;
-    emailVerified?: boolean | null;
-    isAnonymous?: boolean | null;
-    tenantId?: string | null;
-    providerInfo?: {
-      providerId?: string | null;
-      email?: string | null;
-    }[];
-  }
-}
-
-function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+function handleFirestoreError(error: unknown, operationType: string, path: string | null) {
   const errMsg = error instanceof Error ? error.message : String(error);
-  const errInfo: FirestoreErrorInfo = {
+  console.error("Firestore Error logged for diagnostics:", JSON.stringify({
     error: errMsg,
-    authInfo: {
-      userId: null,
-      email: null,
-      emailVerified: null,
-      isAnonymous: null,
-      tenantId: null,
-      providerInfo: []
-    },
     operationType,
-    path
-  };
-  
-  console.error("Firestore Error logged for diagnostics:", JSON.stringify(errInfo));
-  return errInfo;
-}
-
-// Read Firebase config safely at runtime (supports both file and environment fallbacks)
-const configPath = path.join(process.cwd(), "firebase-applet-config.json");
-let db: any = null;
-
-try {
-  let firebaseConfig: any = null;
-  if (fs.existsSync(configPath)) {
-    firebaseConfig = JSON.parse(fs.readFileSync(configPath, "utf8"));
-  } else if (process.env.FIREBASE_PROJECT_ID) {
-    firebaseConfig = {
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      appId: process.env.FIREBASE_APP_ID,
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      firestoreDatabaseId: process.env.FIREBASE_FIRESTORE_DATABASE_ID,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
-    };
-  }
-
-  if (firebaseConfig) {
-    const firebaseApp = initializeApp(firebaseConfig);
-    db = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
-    console.log("[Firebase] Firestore client initialized successfully!");
-  } else {
-    console.warn("[Firebase] Firebase config missing (both file and Env vars). Running in local file-system fallback mode.");
-  }
-} catch (err) {
-  console.error("[Firebase] Initialization error:", err);
+    path,
+  }));
 }
 
 async function startServer() {
@@ -122,42 +52,32 @@ async function startServer() {
         }
       }
 
-      if (db) {
-        try {
-          const docRef = doc(db, "portfolio", "active");
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            let firestoreData = docSnap.data();
-
-            // Self-healing merge: If we have an avatarUrl locally but empty or missing in Firestore, update Firestore!
-            if (localData && localData.personalInfo && localData.personalInfo.avatarUrl &&
-                (!firestoreData.personalInfo || !firestoreData.personalInfo.avatarUrl)) {
-              if (!firestoreData.personalInfo) {
-                firestoreData.personalInfo = {};
-              }
-              firestoreData.personalInfo.avatarUrl = localData.personalInfo.avatarUrl;
-              
-              // Push merged state back to Firestore
-              await setDoc(docRef, firestoreData);
-              console.log("[Firebase] Successfully merged and uploaded local avatar copy to Firestore active document.");
+      try {
+        const firestoreData: any = await getDocument("portfolio/active");
+        if (firestoreData) {
+          if (localData && localData.personalInfo && localData.personalInfo.avatarUrl &&
+              (!firestoreData.personalInfo || !firestoreData.personalInfo.avatarUrl)) {
+            if (!firestoreData.personalInfo) {
+              firestoreData.personalInfo = {};
             }
-
-            return res.json(firestoreData);
+            firestoreData.personalInfo.avatarUrl = localData.personalInfo.avatarUrl;
+            await setDocument("portfolio/active", firestoreData);
+            console.log("[Firebase] Successfully merged and uploaded local avatar copy to Firestore active document.");
           }
-        } catch (dbErr) {
-          handleFirestoreError(dbErr, OperationType.GET, "portfolio/active");
-          console.warn("[Firebase] Firestore load failed, using cache fallback:", dbErr);
+
+          return res.json(firestoreData);
         }
+      } catch (dbErr) {
+        handleFirestoreError(dbErr, "get", "portfolio/active");
+        console.warn("[Firebase] Firestore load failed, using cache fallback:", dbErr);
       }
 
       if (localData) {
-        if (db) {
-          try {
-            await setDoc(doc(db, "portfolio", "active"), localData);
-            console.log("[Firebase] Cache bootstrapped into Firestore from local backup.");
-          } catch (e) {
-            handleFirestoreError(e, OperationType.WRITE, "portfolio/active");
-          }
+        try {
+          await setDocument("portfolio/active", localData);
+          console.log("[Firebase] Cache bootstrapped into Firestore from local backup.");
+        } catch (e) {
+          handleFirestoreError(e, "write", "portfolio/active");
         }
         return res.json(localData);
       } else {
@@ -177,15 +97,12 @@ async function startServer() {
       // 1. Always save locally as a backup
       fs.writeFileSync(activePath, JSON.stringify(data, null, 2), "utf8");
 
-      // 2. Transmit to global persistent Firestore
-      if (db) {
-        try {
-          await setDoc(doc(db, "portfolio", "active"), data);
-          console.log("[Firebase] Successfully saved update to Firestore!");
-        } catch (dbErr) {
-          handleFirestoreError(dbErr, OperationType.WRITE, "portfolio/active");
-          console.error("[Firebase] Firestore save failed:", dbErr);
-        }
+      try {
+        await setDocument("portfolio/active", data);
+        console.log("[Firebase] Successfully saved update to Firestore!");
+      } catch (dbErr) {
+        handleFirestoreError(dbErr, "write", "portfolio/active");
+        console.error("[Firebase] Firestore save failed:", dbErr);
       }
 
       return res.json({ success: true, message: "Portfolio updated successfully" });
@@ -198,20 +115,13 @@ async function startServer() {
   // 3. Get Contact Messages
   app.get("/api/messages", async (req, res) => {
     try {
-      if (db) {
-        try {
-          const querySnapshot = await getDocs(collection(db, "messages"));
-          const messages: any[] = [];
-          querySnapshot.forEach((docSnap) => {
-            messages.push({ ...docSnap.data(), id: docSnap.id });
-          });
-          // Sort descendingly by date
-          messages.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-          return res.json(messages);
-        } catch (dbErr) {
-          handleFirestoreError(dbErr, OperationType.LIST, "messages");
-          console.warn("[Firebase] Firestore messages fetch failed, falling back:", dbErr);
-        }
+      try {
+        const messages = await listDocuments<any>("messages");
+        messages.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+        return res.json(messages);
+      } catch (dbErr) {
+        handleFirestoreError(dbErr, "list", "messages");
+        console.warn("[Firebase] Firestore messages fetch failed, falling back:", dbErr);
       }
 
       if (fs.existsSync(messagesPath)) {
@@ -244,14 +154,11 @@ async function startServer() {
         timestamp: new Date().toISOString()
       };
 
-      // 1. Submit to Firestore
-      if (db) {
-        try {
-          await setDoc(doc(db, "messages", mId), newMessage);
-        } catch (dbErr) {
-          handleFirestoreError(dbErr, OperationType.WRITE, "messages/" + mId);
-          console.error("[Firebase] Firestore message save failed:", dbErr);
-        }
+      try {
+        await setDocument("messages/" + mId, newMessage);
+      } catch (dbErr) {
+        handleFirestoreError(dbErr, "write", "messages/" + mId);
+        console.error("[Firebase] Firestore message save failed:", dbErr);
       }
 
       // 2. Submit to local sync list
@@ -279,14 +186,11 @@ async function startServer() {
     try {
       const { id } = req.params;
 
-      // 1. Terminate from Firestore
-      if (db) {
-        try {
-          await deleteDoc(doc(db, "messages", id));
-        } catch (dbErr) {
-          handleFirestoreError(dbErr, OperationType.DELETE, "messages/" + id);
-          console.error("[Firebase] Firestore message delete failed:", dbErr);
-        }
+      try {
+        await deleteDocument("messages/" + id);
+      } catch (dbErr) {
+        handleFirestoreError(dbErr, "delete", "messages/" + id);
+        console.error("[Firebase] Firestore message delete failed:", dbErr);
       }
 
       // 2. Terminate from local backup

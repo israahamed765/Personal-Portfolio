@@ -95,7 +95,7 @@ export default function AdminPanel({
   const loadMessages = async () => {
     setMsgLoading(true);
     try {
-      const res = await fetch("/api/messages");
+      const res = await fetch("/api/messages", { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
         setMessages(data);

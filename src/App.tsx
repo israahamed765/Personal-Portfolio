@@ -68,7 +68,7 @@ export default function App() {
 
   const fetchLatestPortfolio = async () => {
     try {
-      const response = await fetch("/api/portfolio");
+      const response = await fetch("/api/portfolio", { cache: "no-store" });
       if (response.ok) {
         const latestData = await response.json();
         setPortfolioData(latestData);
